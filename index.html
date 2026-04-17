@@ -36,71 +36,74 @@
             border: 1px solid var(--border);
         }
 
-        /* Progresjonsbar-stil */
-        .streak-container {
-            margin-bottom: 20px;
+        .streak-container { text-align: center; margin-bottom: 20px; }
+        .progress-bg { background: #e4e6eb; height: 12px; border-radius: 10px; width: 100%; margin-top: 8px; overflow: hidden; }
+        .progress-fill { background: var(--success); height: 100%; width: 0%; transition: width 0.5s ease; }
+
+        .dashboard { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+
+        /* Maskinområde med dedikerte plasser for Tall inn/ut */
+        .machine-area {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            background: #2c3e50;
+            padding: 20px;
+            border-radius: 12px;
+            color: white;
+        }
+
+        .io-display {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
             text-align: center;
         }
-        .progress-bg {
-            background: #e4e6eb;
-            height: 12px;
-            border-radius: 10px;
+
+        .io-box {
+            background: rgba(255,255,255,0.1);
+            border: 2px dashed rgba(255,255,255,0.3);
+            border-radius: 8px;
+            width: 80px;
+            height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .io-box span { font-size: 0.7rem; opacity: 0.7; margin-bottom: 2px; }
+        .io-value { font-size: 1.4rem; font-weight: bold; }
+
+        .factory-core {
             width: 100%;
+            height: 60px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
             overflow: hidden;
-            margin-top: 8px;
-        }
-        .progress-fill {
-            background: var(--success);
-            height: 100%;
-            width: 0%;
-            transition: width 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
-        }
-        #streak-count { font-weight: bold; color: var(--success); }
-
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        
-        .dashboard { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-        @media (max-width: 700px) { .dashboard { grid-template-columns: 1fr; } }
-
-        .machine-box {
-            height: 160px; background: #2c3e50; border-radius: 12px;
-            display: flex; justify-content: center; align-items: center;
-            position: relative; overflow: hidden; color: white;
         }
 
         .ball {
-            width: 45px; height: 45px; background: #f39c12;
+            width: 35px; height: 35px; background: #f39c12;
             border-radius: 50%; display: flex; justify-content: center;
-            align-items: center; position: absolute; left: -60px;
-            font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            align-items: center; position: absolute; left: -50px;
+            font-weight: bold; color: white;
         }
 
-        .label { font-weight: bold; font-size: 0.9rem; margin-bottom: 12px; color: #606770; display: block; }
-        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-
-        .btn {
-            padding: 15px; border: 1px solid var(--border); border-radius: 10px;
-            background: white; cursor: pointer; font-size: 1.1rem; font-weight: 600;
-            transition: all 0.2s; color: var(--text);
-        }
-        .btn:hover { background: #f8f9fa; transform: translateY(-1px); border-color: #ccd0d5; }
+        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+        .btn { padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: white; cursor: pointer; font-weight: 600; }
         .btn-op { background: #e7f3ff; color: #1877f2; border: none; }
         .btn-main { background: var(--success); color: white; border: none; grid-column: span 3; }
         .btn-clear { background: #fce9e9; color: var(--danger); border: none; }
 
-        .display {
-            background: #f0f2f5; padding: 20px; border-radius: 12px;
-            font-size: 2rem; font-weight: bold; text-align: center;
-            margin: 15px 0; border: 2px solid var(--border);
-        }
-
-        .log-list { font-family: monospace; list-style: none; padding: 0; margin: 0; }
-        .log-item { padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
-
+        .display { background: #f0f2f5; padding: 15px; border-radius: 10px; font-size: 1.8rem; font-weight: bold; text-align: center; margin: 10px 0; border: 2px solid var(--border); }
+        .log-item { padding: 6px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; font-family: monospace; }
         .hidden { display: none !important; }
-        .working { animation: shake 0.2s infinite; }
-        @keyframes shake { 0% { transform: rotate(1deg); } 100% { transform: rotate(-1deg); } }
     </style>
 </head>
 <body>
@@ -108,34 +111,34 @@
 <div class="container">
     <div id="start-screen" class="card" style="text-align: center;">
         <h1>Funksjonsfabrikken 🏭</h1>
-        <button class="btn" style="width:100%; margin-bottom:10px; background: var(--accent); color:white;" onclick="startGame(1)">Nivå 1: Barneskole</button>
-        <button class="btn" style="width:100%; margin-bottom:10px; background: var(--accent); color:white;" onclick="startGame(2)">Nivå 2: Ungdomsskole</button>
-        <button class="btn" style="width:100%; background: var(--accent); color:white;" onclick="startGame(3)">Nivå 3: Videregående</button>
+        <button class="btn" style="width:100%; margin-bottom:10px;" onclick="startGame(1)">Nivå 1</button>
+        <button class="btn" style="width:100%; margin-bottom:10px;" onclick="startGame(2)">Nivå 2</button>
+        <button class="btn" style="width:100%;" onclick="startGame(3)">Nivå 3</button>
     </div>
 
     <div id="game-screen" class="hidden">
-        <div class="header">
-            <button class="btn" style="padding: 8px 15px; font-size: 0.9rem;" onclick="location.reload()">⬅ Meny</button>
-            <div id="lvl-tag" style="font-weight: bold; color: var(--accent);">NIVÅ 1</div>
-        </div>
-
         <div class="card streak-container">
-            <span class="label">DIN STREAK: <span id="streak-count">0</span> 🔥</span>
-            <div class="progress-bg">
-                <div id="progress-bar" class="progress-fill"></div>
-            </div>
+            <span style="font-weight:bold;">STREAK: <span id="streak-count">0</span> 🔥</span>
+            <div class="progress-bg"><div id="progress-bar" class="progress-fill"></div></div>
         </div>
 
         <div class="dashboard">
             <div>
                 <div class="card" style="padding: 15px;">
-                    <div class="machine-box" id="machine">
-                        <div class="ball" id="ball"></div>
-                        <span style="opacity: 0.2; font-weight: 800;">FABRIKK</span>
+                    <div class="machine-area" id="machine">
+                        <div class="io-display">
+                            <div class="io-box"><span>INN</span><div class="io-value" id="disp-in">-</div></div>
+                            <div class="io-box"><span>UT</span><div class="io-value" id="disp-out">-</div></div>
+                        </div>
+                        <div class="factory-core">
+                            <div class="ball" id="ball"></div>
+                            <span style="opacity: 0.1; font-size: 0.8rem;">PROSESSERER...</span>
+                        </div>
                     </div>
                 </div>
+
                 <div class="card">
-                    <span class="label">TEST ET TALL (X)</span>
+                    <span style="font-size:0.8rem; font-weight:bold; color:#606770;">TEST TALL:</span>
                     <div class="grid">
                         <button class="btn" onclick="runFactory(1)">1</button>
                         <button class="btn" onclick="runFactory(2)">2</button>
@@ -150,23 +153,23 @@
                     </div>
                 </div>
             </div>
+
             <div class="card">
-                <span class="label">HISTORIKK</span>
-                <div id="log-content" class="log-list"></div>
+                <span style="font-size:0.8rem; font-weight:bold; color:#606770;">HISTORIKK:</span>
+                <div id="log-content"></div>
             </div>
         </div>
 
         <div class="card">
-            <span class="label">HVA ER REGELEN?</span>
             <div class="display" id="guessDisplay">f(x) = </div>
-            <div class="grid" style="margin-bottom: 10px;">
+            <div class="grid" style="margin-bottom:10px;">
                 <button class="btn btn-op" onclick="addChar('x')">x</button>
                 <button class="btn btn-op" onclick="addChar('+')">+</button>
                 <button class="btn btn-op" onclick="addChar('-')">−</button>
                 <button class="btn btn-op" onclick="addChar('·')">·</button>
                 <button id="powBtn" class="btn btn-op hidden" onclick="addChar('^2')">x²</button>
             </div>
-            <div class="grid" style="margin-bottom: 20px;">
+            <div class="grid" style="margin-bottom:15px;">
                 <button class="btn" onclick="addChar('1')">1</button>
                 <button class="btn" onclick="addChar('2')">2</button>
                 <button class="btn" onclick="addChar('3')">3</button>
@@ -183,41 +186,20 @@
                 <button class="btn btn-main" onclick="checkGuess()">SJEKK SVAR</button>
                 <button class="btn" onclick="showHint()">Hint</button>
             </div>
-            <div id="feedback" style="text-align:center; margin-top:15px; font-weight:bold;"></div>
+            <div id="feedback" style="text-align:center; margin-top:10px; font-weight:bold;"></div>
         </div>
     </div>
 </div>
 
 <script>
-    let currentLevel = 1;
-    let currentFunc = {};
-    let isProcessing = false;
-    let userGuess = "";
-    let streak = 0;
+    let currentFunc = {}, streak = 0, userGuess = "", isProcessing = false;
+    let lastIn = null, lastOut = null;
 
     function startGame(lvl) {
-        currentLevel = lvl;
-        streak = 0;
-        updateStreakBar();
         document.getElementById('start-screen').classList.add('hidden');
         document.getElementById('game-screen').classList.remove('hidden');
-        document.getElementById('lvl-tag').innerText = "NIVÅ " + lvl;
         document.getElementById('powBtn').classList.toggle('hidden', lvl !== 3);
-        generateNewFunction();
-    }
-
-    function updateStreakBar() {
-        const bar = document.getElementById('progress-bar');
-        const count = document.getElementById('streak-count');
-        count.innerText = streak;
-        // Baren fylles per 5 oppgaver (20% per riktig)
-        let percent = (streak % 5) * 20;
-        if (streak > 0 && streak % 5 === 0) percent = 100;
-        bar.style.width = percent + "%";
-        
-        // Bonus-effekt ved streak
-        if (streak >= 5) bar.style.boxShadow = "0 0 15px #2ecc71";
-        else bar.style.boxShadow = "none";
+        currentLevel = lvl; generateNewFunction();
     }
 
     function generateNewFunction() {
@@ -225,79 +207,92 @@
         const a = Math.floor(Math.random() * 4) + 2;
         if (currentLevel === 1) {
             const op = Math.random() > 0.5 ? '+' : '-';
-            currentFunc = { calc: (x) => op === '+' ? x + n : x - n, ans: `x${op}${n}`, hint: `Prøv ${op}` };
+            currentFunc = { calc: (x) => op === '+' ? x + n : x - n, ans: `x${op}${n}` };
         } else if (currentLevel === 2) {
-            const type = Math.floor(Math.random() * 2);
-            currentFunc = (type === 0) ? 
-                { calc: (x) => a * x, ans: `${a}x`, hint: "Ganging" } : 
-                { calc: (x) => a * x + n, ans: `${a}x+${n}`, hint: "Ganging og pluss" };
+            currentFunc = { calc: (x) => a * x, ans: `${a}x` };
         } else {
-            currentFunc = { calc: (x) => Math.pow(x, 2) + n, ans: `x^2+${n}`, hint: "x i andre potens" };
+            currentFunc = { calc: (x) => Math.pow(x, 2) + n, ans: `x^2+${n}` };
         }
-        currentFunc.ans = currentFunc.ans.replace("+-", "-");
-        userGuess = "";
-        updateDisplay();
+        userGuess = ""; updateDisplay();
+        // Nullstill visning for ny maskin
+        lastIn = null; lastOut = null;
+        document.getElementById('disp-in').innerText = "-";
+        document.getElementById('disp-out').innerText = "-";
+    }
+
+    function runFactory(val) {
+        if (isProcessing) return;
+        
+        // 1. FLYTT FORRIGE TIL LOGG (hvis det finnes noe)
+        if (lastIn !== null) {
+            const logBox = document.getElementById('log-content');
+            const item = document.createElement('div');
+            item.className = "log-item";
+            item.innerHTML = `<span>${lastIn}</span> <span>➔</span> <span>${lastOut}</span>`;
+            logBox.insertBefore(item, logBox.firstChild);
+        }
+
+        // 2. START NY PROSESS
+        isProcessing = true;
+        lastIn = val;
+        document.getElementById('disp-in').innerText = val;
+        document.getElementById('disp-out').innerText = "?";
+        
+        const ball = document.getElementById('ball');
+        ball.innerText = val;
+        ball.style.transition = 'none'; ball.style.left = '-50px'; ball.style.opacity = '1';
+
+        setTimeout(() => {
+            ball.style.transition = '0.8s ease-in-out';
+            ball.style.left = '45%';
+        }, 50);
+
+        setTimeout(() => {
+            lastOut = currentFunc.calc(val);
+            document.getElementById('disp-out').innerText = lastOut;
+            ball.innerText = lastOut;
+            ball.style.left = '110%';
+        }, 900);
+
+        setTimeout(() => {
+            ball.style.opacity = '0';
+            isProcessing = false;
+        }, 1800);
+    }
+
+    function checkGuess() {
+        let cleanGuess = userGuess.replace(/·/g, '').replace(/−/g, '-').replace(/\s+/g, '');
+        let cleanAns = currentFunc.ans.replace(/·/g, '').replace(/-/g, '-').replace(/\s+/g, '');
+
+        if (cleanGuess === cleanAns || cleanGuess === cleanAns.split('').reverse().join('')) {
+            streak++;
+            updateUI(true);
+        } else {
+            streak = 0;
+            updateUI(false);
+        }
+    }
+
+    function updateUI(correct) {
+        document.getElementById('streak-count').innerText = streak;
+        document.getElementById('progress-bar').style.width = (streak % 5) * 20 + "%";
+        const fb = document.getElementById('feedback');
+        if (correct) {
+            fb.innerHTML = "<span style='color:var(--success)'>RIKTIG!</span>";
+            setTimeout(() => { 
+                document.getElementById('log-content').innerHTML = '';
+                generateNewFunction(); 
+                fb.innerText = "";
+            }, 1200);
+        } else {
+            fb.innerHTML = "<span style='color:var(--danger)'>FEIL!</span>";
+        }
     }
 
     function addChar(c) { userGuess += c; updateDisplay(); }
     function clearGuess() { userGuess = ""; updateDisplay(); }
     function updateDisplay() { document.getElementById('guessDisplay').innerText = "f(x) = " + userGuess; }
-    function showHint() { alert("💡 Hint: " + currentFunc.hint); }
-
-    function runFactory(val) {
-        if (isProcessing) return;
-        isProcessing = true;
-        const ball = document.getElementById('ball');
-        const machine = document.getElementById('machine');
-        ball.innerText = val;
-        ball.style.transition = 'none'; ball.style.left = '-60px'; ball.style.opacity = '1';
-        machine.classList.add('working');
-
-        setTimeout(() => { ball.style.transition = '0.8s ease-in-out'; ball.style.left = '42%'; }, 50);
-        setTimeout(() => {
-            const res = currentFunc.calc(val);
-            ball.innerText = res; ball.style.left = '110%';
-            const logBox = document.getElementById('log-content');
-            const item = document.createElement('div');
-            item.className = "log-item";
-            item.innerHTML = `<span>Inn: <b>${val}</b></span> <span>Ut: <b style="color:var(--accent)">${res}</b></span>`;
-            logBox.insertBefore(item, logBox.firstChild);
-            machine.classList.remove('working');
-        }, 900);
-        setTimeout(() => { ball.style.opacity = '0'; isProcessing = false; }, 1800);
-    }
-
-    function checkGuess() {
-        const fb = document.getElementById('feedback');
-        let cleanGuess = userGuess.replace(/·/g, '').replace(/−/g, '-').replace(/\s+/g, '');
-        let cleanAns = currentFunc.ans.replace(/·/g, '').replace(/-/g, '-').replace(/\s+/g, '');
-
-        const isCorrect = () => {
-            if (cleanGuess === cleanAns) return true;
-            if (currentLevel === 2 && !cleanAns.includes('+') && !cleanAns.includes('-')) {
-                if (cleanGuess === cleanAns.split('').reverse().join('')) return true;
-            }
-            if (cleanAns.includes('+')) {
-                let p = cleanAns.split('+');
-                if (cleanGuess === (p[1] + '+' + p[0])) return true;
-            }
-            return false;
-        };
-
-        if (isCorrect()) {
-            streak++;
-            updateStreakBar();
-            fb.innerHTML = "<span style='color:var(--success)'>⭐ RIKTIG! +1 til streak!</span>";
-            setTimeout(() => { 
-                document.getElementById('log-content').innerHTML = '';
-                fb.innerText = ''; generateNewFunction(); 
-            }, 1200);
-        } else {
-            streak = 0; // Nullstiller ved feil
-            updateStreakBar();
-            fb.innerHTML = "<span style='color:var(--danger)'>❌ Feil! Streaken ble brutt.</span>";
-        }
-    }
+    function showHint() { alert("Hint: Prøv å se på sammenhengen mellom inn og ut!"); }
 </script>
 </body>
 </html>
