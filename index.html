@@ -34,7 +34,6 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* Startskjerm */
         #start-screen { text-align: center; padding: 40px; }
         .level-btn {
             display: block; width: 100%; padding: 20px; margin: 10px 0;
@@ -42,24 +41,22 @@
             border-radius: 10px; font-size: 1.2rem; cursor: pointer;
         }
 
-        /* Top Bar */
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 
-        /* Hoved-layout (Grid) */
-        .game-grid {
+        .machine-log-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
+            margin-bottom: 20px;
         }
 
-        @media (max-width: 650px) {
-            .game-grid { grid-template-columns: 1fr; }
+        @media (max-width: 600px) {
+            .machine-log-grid { grid-template-columns: 1fr; }
         }
 
-        /* Maskinen og Loggen */
         .machine-area {
             background: #0f3460;
-            height: 180px;
+            height: 150px;
             border-radius: 15px;
             position: relative;
             overflow: hidden;
@@ -72,20 +69,20 @@
         .ball {
             width: 45px; height: 45px; background: var(--accent);
             border-radius: 50%; display: flex; justify-content: center;
-            align-items: center; position: absolute; left: -60px; font-weight: bold;
+            align-items: center; position: absolute; left: -60px; font-weight: bold; color: white;
         }
 
         .log-area {
             background: rgba(0,0,0,0.3);
             border-radius: 15px;
             padding: 15px;
-            height: 180px;
+            height: 150px;
             overflow-y: auto;
             font-family: monospace;
+            font-size: 0.9rem;
         }
 
-        /* Tastatur-design */
-        .keypad-label { font-size: 0.9rem; margin: 15px 0 8px; color: var(--accent); font-weight: bold; }
+        .keypad-label { font-size: 0.9rem; margin: 15px 0 8px; color: var(--accent); font-weight: bold; text-transform: uppercase; }
         
         .key-grid {
             display: grid;
@@ -103,15 +100,16 @@
         .key.action { background: var(--success); grid-column: span 2; }
         .key.clear { background: #c0392b; }
 
-        /* Svar-felt */
         .display-box {
             background: white; color: #222; padding: 15px;
             border-radius: 10px; font-size: 1.6rem; font-weight: bold;
             text-align: center; margin: 15px 0; min-height: 40px;
         }
 
+        .hidden { display: none !important; }
+
         .working { animation: shake 0.1s infinite; }
-        @keyframes shake { 0% { transform: rotate(1deg); } 100% { transform: rotate(-1deg); } }
+        @keyframes shake { 0% { transform: rotate(0.5deg); } 100% { transform: rotate(-0.5deg); } }
     </style>
 </head>
 <body>
@@ -120,28 +118,28 @@
     <div id="start-screen">
         <h1>🏭 Funksjonsfabrikken</h1>
         <p>Velg nivå for å starte:</p>
-        <button class="level-btn" onclick="startGame(1)">Nivå 1: Barn (+ / -)</button>
-        <button class="level-btn" onclick="startGame(2)">Nivå 2: Ungdom (Blandet)</button>
-        <button class="level-btn" onclick="startGame(3)">Nivå 3: VGS (x²)</button>
+        <button class="level-btn" onclick="startGame(1)">Nivå 1: Barneskole</button>
+        <button class="level-btn" onclick="startGame(2)">Nivå 2: Ungdomsskole</button>
+        <button class="level-btn" onclick="startGame(3)">Nivå 3: Videregående</button>
     </div>
 
     <div id="game-screen" style="display:none;">
         <div class="header">
-            <button onclick="location.reload()" style="background:none; border:1px solid #555; color:#888; cursor:pointer; padding:5px 10px; border-radius:5px;">Avbryt</button>
-            <div id="lvl-tag">Nivå</div>
+            <button onclick="location.reload()" style="background:none; border:1px solid #555; color:#888; cursor:pointer; padding:5px 10px; border-radius:5px;">Meny</button>
+            <div id="lvl-tag" style="font-weight:bold; color:var(--accent)">Nivå</div>
         </div>
 
-        <div class="game-grid">
+        <div class="machine-log-grid">
             <div class="machine-area" id="machine">
                 <div class="ball" id="ball"></div>
-                <div id="m-text" style="color:rgba(255,255,255,0.2); font-weight:bold; letter-spacing:5px;">FABRIKK</div>
+                <div style="color:rgba(255,255,255,0.1); font-weight:bold; letter-spacing:3px;">FABRIKK-MODUL</div>
             </div>
             <div class="log-area" id="log">
-                <div style="font-size:0.7rem; color:#666; margin-bottom:10px;">HISTORIKK (x ➔ y)</div>
+                <div style="font-size:0.7rem; color:#666; margin-bottom:5px;">HISTORIKK</div>
             </div>
         </div>
 
-        <div class="keypad-label">TEST ET TALL (x):</div>
+        <div class="keypad-label">1. Test et tall (x):</div>
         <div class="key-grid">
             <button class="key" onclick="runFactory(1)">1</button>
             <button class="key" onclick="runFactory(2)">2</button>
@@ -155,9 +153,7 @@
             <button class="key" onclick="runFactory(0)">0</button>
         </div>
 
-        <hr style="margin:25px 0; border:0; border-top:1px solid #333;">
-
-        <div class="keypad-label">GJETT FUNKSJONEN:</div>
+        <div class="keypad-label" style="margin-top:30px;">2. Gjett funksjonen:</div>
         <div class="display-box" id="guessDisplay">f(x) = </div>
         
         <div class="key-grid">
@@ -165,14 +161,13 @@
             <button class="key op" onclick="addChar('+')">+</button>
             <button class="key op" onclick="addChar('-')">-</button>
             <button class="key op" onclick="addChar('·')">·</button>
-            <button class="key op" onclick="addChar('^2')">x²</button>
+            <button id="powBtn" class="key op hidden" onclick="addChar('^2')">x²</button>
             
             <button class="key" onclick="addChar('1')">1</button>
             <button class="key" onclick="addChar('2')">2</button>
             <button class="key" onclick="addChar('3')">3</button>
             <button class="key" onclick="addChar('4')">4</button>
             <button class="key" onclick="addChar('5')">5</button>
-            
             <button class="key" onclick="addChar('6')">6</button>
             <button class="key" onclick="addChar('7')">7</button>
             <button class="key" onclick="addChar('8')">8</button>
@@ -197,7 +192,15 @@
         currentLevel = lvl;
         document.getElementById('start-screen').style.display = 'none';
         document.getElementById('game-screen').style.display = 'block';
-        document.getElementById('lvl-tag').innerText = "Nivå " + lvl;
+        document.getElementById('lvl-tag').innerText = "NIVÅ " + lvl;
+        
+        // Vis kun x²-knapp på nivå 3
+        if (lvl === 3) {
+            document.getElementById('powBtn').classList.remove('hidden');
+        } else {
+            document.getElementById('powBtn').classList.add('hidden');
+        }
+        
         generateNewFunction();
     }
 
@@ -206,12 +209,12 @@
         const a = Math.floor(Math.random() * 4) + 2;
         if (currentLevel === 1) {
             const op = Math.random() > 0.5 ? '+' : '-';
-            currentFunc = { calc: (x) => op === '+' ? x + n : x - n, ans: `x${op}${n}`, hint: `Noe med ${op}` };
+            currentFunc = { calc: (x) => op === '+' ? x + n : x - n, ans: `x${op}${n}`, hint: `Bruker ${op}` };
         } else if (currentLevel === 2) {
             const type = Math.floor(Math.random() * 2);
             currentFunc = (type === 0) ? 
                 { calc: (x) => a * x, ans: `${a}x`, hint: "Multiplikasjon" } : 
-                { calc: (x) => a * x + n, ans: `${a}x+${n}`, hint: "To operasjoner" };
+                { calc: (x) => a * x + n, ans: `${a}x+${n}`, hint: "Ganging og pluss" };
         } else {
             currentFunc = { calc: (x) => Math.pow(x, 2) + n, ans: `x^2+${n}`, hint: "x i andre potens" };
         }
@@ -252,13 +255,13 @@
         let ans = currentFunc.ans.replace(/\^2/g, 'x2');
         const fb = document.getElementById('feedback');
         if (guess === ans) {
-            fb.innerHTML = "<span style='color:var(--success)'>🏆 RIKTIG! Ny maskin klargjøres...</span>";
+            fb.innerHTML = "<span style='color:var(--success)'>🎯 HELT RIKTIG! Ny oppgave kommer...</span>";
             setTimeout(() => { 
-                document.getElementById('log').innerHTML = '<div style="font-size:0.7rem; color:#666; margin-bottom:10px;">HISTORIKK</div>';
+                document.getElementById('log').innerHTML = '<div style="font-size:0.7rem; color:#666; margin-bottom:5px;">HISTORIKK</div>';
                 fb.innerText = ''; generateNewFunction(); 
             }, 2000);
         } else {
-            fb.innerHTML = "<span style='color:#e74c3c'>❌ Ikke helt riktig ennå!</span>";
+            fb.innerHTML = "<span style='color:#e74c3c'>Prøv igjen! Sjekk tallene i loggen.</span>";
         }
     }
 </script>
