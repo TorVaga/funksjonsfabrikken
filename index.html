@@ -6,177 +6,194 @@
     <title>Funksjonsfabrikken 🏭</title>
     <style>
         :root {
-            --primary: #1a1a2e;
-            --panel: #16213e;
-            --accent: #f39c12;
-            --success: #27ae60;
+            --bg: #f0f2f5;
+            --card: #ffffff;
+            --text: #1c1e21;
+            --accent: #4a69bd;
+            --success: #2ecc71;
             --danger: #e74c3c;
-            --info: #0984e3;
-            --text: #e9ecef;
-            --key: #2d3436;
+            --border: #e4e6eb;
         }
 
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
-            background-color: var(--primary);
+            background-color: var(--bg);
             color: var(--text);
             margin: 0;
-            padding: 15px;
+            padding: 20px;
             display: flex;
             justify-content: center;
         }
 
-        .game-container {
+        .container {
             width: 100%;
-            max-width: 750px;
-            background: var(--panel);
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            max-width: 900px;
         }
 
-        #start-screen { text-align: center; padding: 40px; }
-        .level-btn {
-            display: block; width: 100%; padding: 20px; margin: 12px 0;
-            background: var(--accent); color: white; border: none;
-            border-radius: 10px; font-size: 1.2rem; cursor: pointer; font-weight: bold;
+        /* Kort-stil */
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
         }
 
-        .header { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
-        .btn-menu { background: #2d3436; border: none; color: #aaa; padding: 6px 12px; border-radius: 5px; cursor: pointer; }
-
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        
+        /* Dashboard Layout */
         .dashboard {
             display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
         }
 
-        .box {
-            background: rgba(0,0,0,0.3);
-            border: 2px solid #2d3436;
+        @media (max-width: 700px) { .dashboard { grid-template-columns: 1fr; } }
+
+        .machine-box {
+            height: 160px;
+            background: #2c3e50;
             border-radius: 12px;
-            height: 140px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             position: relative;
             overflow: hidden;
+            color: white;
         }
-
-        .machine { display: flex; justify-content: center; align-items: center; }
-        .log { padding: 10px; font-size: 0.85rem; overflow-y: auto; }
-        .log-title { font-size: 0.65rem; color: #636e72; text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
 
         .ball {
-            width: 40px; height: 40px; background: var(--accent);
+            width: 45px; height: 45px; background: #f39c12;
             border-radius: 50%; display: flex; justify-content: center;
-            align-items: center; position: absolute; left: -50px; 
-            font-weight: bold; color: white; z-index: 10;
+            align-items: center; position: absolute; left: -60px;
+            font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        .section-label { font-size: 0.8rem; font-weight: bold; color: var(--accent); margin-bottom: 8px; text-transform: uppercase; }
+        /* Knapper */
+        .label { font-weight: bold; font-size: 0.9rem; margin-bottom: 12px; color: #606770; display: block; }
         
-        .key-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            margin-bottom: 15px;
+        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+
+        .btn {
+            padding: 15px; border: 1px solid var(--border); border-radius: 10px;
+            background: white; cursor: pointer; font-size: 1.1rem; font-weight: 600;
+            transition: all 0.2s; color: var(--text);
+        }
+        .btn:hover { background: #f8f9fa; transform: translateY(-1px); border-color: #ccd0d5; }
+        .btn:active { background: #ebedf0; transform: translateY(0); }
+
+        .btn-op { background: #e7f3ff; color: #1877f2; border: none; }
+        .btn-op:hover { background: #dbe7f2; }
+        
+        .btn-main { background: var(--success); color: white; border: none; grid-column: span 3; }
+        .btn-main:hover { background: #27ae60; }
+
+        .btn-clear { background: #fce9e9; color: var(--danger); border: none; }
+
+        /* Display */
+        .display {
+            background: #f0f2f5;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 15px 0;
+            border: 2px solid var(--border);
         }
 
-        .key {
-            height: 48px; background: var(--key); color: white;
-            border: none; border-radius: 8px; cursor: pointer; font-size: 1.1rem;
-            border-bottom: 3px solid #1a1a1a;
-        }
-        .key:active { transform: translateY(2px); border-bottom-width: 1px; }
-        .key.op { background: var(--info); border-bottom-color: #0652dd; }
-        .key.action { background: var(--success); border-bottom-color: #1b663e; font-weight: bold; }
-        .key.clear { background: var(--danger); border-bottom-color: #a52a2a; }
-
-        .display-box {
-            background: #fff; color: #222; padding: 15px;
-            border-radius: 10px; font-size: 1.8rem; font-weight: bold;
-            text-align: center; margin: 10px 0; border: 3px solid #dfe6e9;
-        }
+        .log-list { font-family: monospace; list-style: none; padding: 0; margin: 0; }
+        .log-item { padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
 
         .hidden { display: none !important; }
-        .working { animation: vibrate 0.1s infinite; }
-        @keyframes vibrate { 0% { transform: translate(1px, 1px); } 100% { transform: translate(-1px, -1px); } }
-
-        @media (max-width: 500px) {
-            .dashboard { grid-template-columns: 1fr; }
-        }
+        .working { animation: shake 0.2s infinite; }
+        @keyframes shake { 0% { transform: rotate(1deg); } 100% { transform: rotate(-1deg); } }
     </style>
 </head>
 <body>
 
-<div class="game-container">
-    <div id="start-screen">
-        <h1 style="color: var(--accent);">🏭 FUNKSJONS-FABRIKKEN</h1>
-        <button class="level-btn" onclick="startGame(1)">NIVÅ 1: BARNESKOLE</button>
-        <button class="level-btn" onclick="startGame(2)">NIVÅ 2: UNGDOMSSKOLE</button>
-        <button class="level-btn" onclick="startGame(3)">NIVÅ 3: VIDEREGÅENDE</button>
+<div class="container">
+    <div id="start-screen" class="card" style="text-align: center;">
+        <h1 style="font-size: 2rem; margin-bottom: 10px;">Funksjonsfabrikken 🏭</h1>
+        <p style="color: #606770; margin-bottom: 30px;">Velg et nivå for å begynne å utforske regler.</p>
+        <button class="btn" style="width:100%; margin-bottom:10px; background: var(--accent); color:white;" onclick="startGame(1)">Nivå 1: Pluss & Minus</button>
+        <button class="btn" style="width:100%; margin-bottom:10px; background: var(--accent); color:white;" onclick="startGame(2)">Nivå 2: Ganging</button>
+        <button class="btn" style="width:100%; background: var(--accent); color:white;" onclick="startGame(3)">Nivå 3: Potenser (x²)</button>
     </div>
 
     <div id="game-screen" class="hidden">
         <div class="header">
-            <button class="btn-menu" onclick="location.reload()">⬅ MENY</button>
-            <div id="lvl-tag" style="font-weight:bold; color: var(--accent);">NIVÅ 1</div>
+            <button class="btn" style="padding: 8px 15px; font-size: 0.9rem;" onclick="location.reload()">⬅ Meny</button>
+            <div id="lvl-tag" style="font-weight: bold; color: var(--accent);">NIVÅ 1</div>
         </div>
 
         <div class="dashboard">
-            <div class="box machine" id="machine">
-                <div class="ball" id="ball"></div>
-                <div style="color:rgba(255,255,255,0.05); font-weight: 900;">FABRIKK</div>
+            <div>
+                <div class="card" style="padding: 15px;">
+                    <div class="machine-box" id="machine">
+                        <div class="ball" id="ball"></div>
+                        <span style="opacity: 0.2; font-weight: 800; letter-spacing: 2px;">MATEMATIKK-FABRIKK</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <span class="label">TEST ET TALL (X)</span>
+                    <div class="grid">
+                        <button class="btn" onclick="runFactory(1)">1</button>
+                        <button class="btn" onclick="runFactory(2)">2</button>
+                        <button class="btn" onclick="runFactory(3)">3</button>
+                        <button class="btn" onclick="runFactory(4)">4</button>
+                        <button class="btn" onclick="runFactory(5)">5</button>
+                        <button class="btn" onclick="runFactory(6)">6</button>
+                        <button class="btn" onclick="runFactory(7)">7</button>
+                        <button class="btn" onclick="runFactory(8)">8</button>
+                        <button class="btn" onclick="runFactory(9)">9</button>
+                        <button class="btn" onclick="runFactory(0)">0</button>
+                    </div>
+                </div>
             </div>
-            <div class="box log" id="log">
-                <div class="log-title">Logg (x ➔ y)</div>
-                <div id="log-content"></div>
+
+            <div class="card">
+                <span class="label">HISTORIKK</span>
+                <div id="log-content" class="log-list">
+                    <p style="color: #90949c; font-size: 0.8rem;">Ingen tall testet ennå.</p>
+                </div>
             </div>
         </div>
 
-        <div class="section-label">1. Test tall:</div>
-        <div class="key-grid">
-            <button class="key" onclick="runFactory(1)">1</button>
-            <button class="key" onclick="runFactory(2)">2</button>
-            <button class="key" onclick="runFactory(3)">3</button>
-            <button class="key" onclick="runFactory(4)">4</button>
-            <button class="key" onclick="runFactory(5)">5</button>
-            <button class="key" onclick="runFactory(6)">6</button>
-            <button class="key" onclick="runFactory(7)">7</button>
-            <button class="key" onclick="runFactory(8)">8</button>
-            <button class="key" onclick="runFactory(9)">9</button>
-            <button class="key" onclick="runFactory(0)">0</button>
-        </div>
+        <div class="card">
+            <span class="label">HVA TROR DU REGELEN ER?</span>
+            <div class="display" id="guessDisplay">f(x) = </div>
+            
+            <div class="grid" style="margin-bottom: 10px;">
+                <button class="btn btn-op" onclick="addChar('x')">x</button>
+                <button class="btn btn-op" onclick="addChar('+')">+</button>
+                <button class="btn btn-op" onclick="addChar('-')">−</button>
+                <button class="btn btn-op" onclick="addChar('·')">·</button>
+                <button id="powBtn" class="btn btn-op hidden" onclick="addChar('^2')">x²</button>
+            </div>
 
-        <div class="section-label">2. Gjett f(x):</div>
-        <div class="display-box" id="guessDisplay">f(x) = </div>
-        
-        <div class="key-grid">
-            <button class="key op" onclick="addChar('x')">x</button>
-            <button class="key op" onclick="addChar('+')">+</button>
-            <button class="key op" onclick="addChar('-')">−</button>
-            <button class="key op" onclick="addChar('·')">·</button>
-            <button id="powBtn" class="key op hidden" onclick="addChar('^2')">x²</button>
-        </div>
+            <div class="grid" style="margin-bottom: 20px;">
+                <button class="btn" onclick="addChar('1')">1</button>
+                <button class="btn" onclick="addChar('2')">2</button>
+                <button class="btn" onclick="addChar('3')">3</button>
+                <button class="btn" onclick="addChar('4')">4</button>
+                <button class="btn" onclick="addChar('5')">5</button>
+                <button class="btn" onclick="addChar('6')">6</button>
+                <button class="btn" onclick="addChar('7')">7</button>
+                <button class="btn" onclick="addChar('8')">8</button>
+                <button class="btn" onclick="addChar('9')">9</button>
+                <button class="btn" onclick="addChar('0')">0</button>
+            </div>
 
-        <div class="key-grid">
-            <button class="key" onclick="addChar('1')">1</button>
-            <button class="key" onclick="addChar('2')">2</button>
-            <button class="key" onclick="addChar('3')">3</button>
-            <button class="key" onclick="addChar('4')">4</button>
-            <button class="key" onclick="addChar('5')">5</button>
-            <button class="key" onclick="addChar('6')">6</button>
-            <button class="key" onclick="addChar('7')">7</button>
-            <button class="key" onclick="addChar('8')">8</button>
-            <button class="key" onclick="addChar('9')">9</button>
-            <button class="key" onclick="addChar('0')">0</button>
+            <div class="grid">
+                <button class="btn btn-clear" onclick="clearGuess()">Slett</button>
+                <button class="btn btn-main" onclick="checkGuess()">SJEKK SVAR</button>
+                <button class="btn" style="background: #f0f2f5;" onclick="showHint()">Hint</button>
+            </div>
+            <div id="feedback" style="text-align:center; margin-top:15px; font-weight:bold; min-height:20px;"></div>
         </div>
-
-        <div class="key-grid">
-            <button class="key clear" onclick="clearGuess()">Slett</button>
-            <button class="key action" style="grid-column: span 3" onclick="checkGuess()">SJEKK SVAR</button>
-            <button class="key op" onclick="showHint()">Hint</button>
-        </div>
-        <div id="feedback" style="text-align:center; font-weight:bold; min-height:20px; font-size: 0.9rem;"></div>
     </div>
 </div>
 
@@ -200,7 +217,7 @@
         const a = Math.floor(Math.random() * 4) + 2;
         if (currentLevel === 1) {
             const op = Math.random() > 0.5 ? '+' : '-';
-            currentFunc = { calc: (x) => op === '+' ? x + n : x - n, ans: `x${op}${n}`, hint: `Bruker ${op}` };
+            currentFunc = { calc: (x) => op === '+' ? x + n : x - n, ans: `x${op}${n}`, hint: `Noe med ${op}` };
         } else if (currentLevel === 2) {
             const type = Math.floor(Math.random() * 2);
             currentFunc = (type === 0) ? 
@@ -232,10 +249,15 @@
         setTimeout(() => {
             const res = currentFunc.calc(val);
             ball.innerText = res; ball.style.left = '110%';
-            const entry = document.createElement('div');
-            entry.innerHTML = `<span style="color:#636e72">${val}</span> ➔ <span style="color:var(--accent)">${res}</span>`;
-            const log = document.getElementById('log-content');
-            log.insertBefore(entry, log.firstChild);
+            
+            const logBox = document.getElementById('log-content');
+            if(logBox.innerHTML.includes("Ingen tall")) logBox.innerHTML = "";
+            
+            const item = document.createElement('div');
+            item.className = "log-item";
+            item.innerHTML = `<span>Inn: <b>${val}</b></span> <span>Ut: <b style="color:var(--accent)">${res}</b></span>`;
+            logBox.insertBefore(item, logBox.firstChild);
+            
             machine.classList.remove('working');
         }, 900);
         setTimeout(() => { ball.style.opacity = '0'; isProcessing = false; }, 1800);
@@ -246,29 +268,24 @@
         let cleanGuess = userGuess.replace(/·/g, '').replace(/−/g, '-').replace(/\s+/g, '');
         let cleanAns = currentFunc.ans.replace(/·/g, '').replace(/-/g, '-').replace(/\s+/g, '');
 
-        if (cleanGuess === cleanAns) { success(); return; }
+        const success = () => {
+            fb.innerHTML = "<span style='color:var(--success)'>⭐ RIKTIG! Ny maskin klargjøres...</span>";
+            setTimeout(() => { 
+                document.getElementById('log-content').innerHTML = '<p style="color: #90949c; font-size: 0.8rem;">Ingen tall testet ennå.</p>';
+                fb.innerText = ''; generateNewFunction(); 
+            }, 1500);
+        };
 
-        // Sjekk x4 vs 4x
+        if (cleanGuess === cleanAns) { success(); return; }
         if (currentLevel === 2 && !cleanAns.includes('+') && !cleanAns.includes('-')) {
             if (cleanGuess === cleanAns.split('').reverse().join('')) { success(); return; }
         }
-        
-        // Sjekk n+x vs x+n
         if (cleanAns.includes('+')) {
             let p = cleanAns.split('+');
             if (cleanGuess === (p[1] + '+' + p[0])) { success(); return; }
         }
 
         fb.innerHTML = "<span style='color:var(--danger)'>❌ Ikke helt rett, prøv igjen!</span>";
-
-        function success() {
-            fb.innerHTML = "<span style='color:var(--success)'>⭐ RIKTIG! Ny maskin...</span>";
-            setTimeout(() => { 
-                document.getElementById('log-content').innerHTML = '';
-                fb.innerText = ''; 
-                generateNewFunction(); 
-            }, 1500);
-        }
     }
 </script>
 </body>
