@@ -16,319 +16,251 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            padding: 20px;
         }
 
-        /* Startskjerm */
-        #start-screen {
-            text-align: center;
-            background: var(--panel);
-            padding: 40px;
-            border-radius: 20px;
-            border: 3px solid var(--accent);
-        }
-
-        .level-btn {
-            display: block;
+        .game-container {
             width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            font-size: 1.1rem;
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        /* Spillskjerm */
-        #game-screen {
-            display: none;
-            width: 95%;
-            max-width: 1000px;
+            max-width: 800px;
             background: var(--panel);
             padding: 20px;
             border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .main-grid {
+        /* Startskjerm */
+        #start-screen { text-align: center; padding: 40px; }
+        .level-btn {
+            display: block; width: 100%; padding: 20px; margin: 10px 0;
+            background: var(--accent); color: white; border: none;
+            border-radius: 10px; font-size: 1.2rem; cursor: pointer;
+        }
+
+        /* Top Bar */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+
+        /* Hoved-layout (Grid) */
+        .game-grid {
             display: grid;
-            grid-template-columns: 180px 1fr 220px;
+            grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
 
-        /* Tall-tastatur (venstre) */
-        .keypad {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
+        @media (max-width: 650px) {
+            .game-grid { grid-template-columns: 1fr; }
         }
 
-        .btn {
-            padding: 15px;
-            background: var(--key);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            box-shadow: 0 3px #222;
-        }
-
-        .btn:active { box-shadow: none; transform: translateY(3px); }
-
-        /* Fabrikk (midten) */
-        .factory-box {
-            height: 200px;
+        /* Maskinen og Loggen */
+        .machine-area {
             background: #0f3460;
-            border: 5px solid #555;
+            height: 180px;
             border-radius: 15px;
             position: relative;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
+            border: 4px solid #333;
         }
 
         .ball {
-            width: 45px;
-            height: 45px;
-            background: var(--accent);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            left: -60px;
-            font-weight: bold;
+            width: 45px; height: 45px; background: var(--accent);
+            border-radius: 50%; display: flex; justify-content: center;
+            align-items: center; position: absolute; left: -60px; font-weight: bold;
         }
 
-        /* Matte-tastatur (bunn) */
-        .math-keyboard {
-            grid-column: span 3;
-            background: rgba(0,0,0,0.2);
-            padding: 20px;
-            border-radius: 15px;
-            margin-top: 20px;
-        }
-
-        .input-display {
-            background: #fff;
-            color: #333;
-            padding: 15px;
-            font-size: 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            min-height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-        }
-
-        .math-keys {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        .m-btn {
-            padding: 10px 20px;
-            background: #34495e;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
-
-        .m-btn.special { background: var(--success); }
-        .m-btn.clear { background: #c0392b; }
-
-        .log {
+        .log-area {
             background: rgba(0,0,0,0.3);
-            padding: 10px;
-            border-radius: 10px;
-            height: 250px;
+            border-radius: 15px;
+            padding: 15px;
+            height: 180px;
             overflow-y: auto;
-            font-size: 0.9rem;
+            font-family: monospace;
         }
 
-        .working { animation: vibrate 0.1s infinite; }
-        @keyframes vibrate { 0% { transform: translate(1px); } 100% { transform: translate(-1px); } }
+        /* Tastatur-design */
+        .keypad-label { font-size: 0.9rem; margin: 15px 0 8px; color: var(--accent); font-weight: bold; }
+        
+        .key-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        .key {
+            padding: 15px 5px; background: var(--key); color: white;
+            border: none; border-radius: 6px; cursor: pointer; font-size: 1.1rem;
+            box-shadow: 0 3px #222;
+        }
+        .key:active { transform: translateY(2px); box-shadow: none; }
+        .key.op { background: #34495e; }
+        .key.action { background: var(--success); grid-column: span 2; }
+        .key.clear { background: #c0392b; }
+
+        /* Svar-felt */
+        .display-box {
+            background: white; color: #222; padding: 15px;
+            border-radius: 10px; font-size: 1.6rem; font-weight: bold;
+            text-align: center; margin: 15px 0; min-height: 40px;
+        }
+
+        .working { animation: shake 0.1s infinite; }
+        @keyframes shake { 0% { transform: rotate(1deg); } 100% { transform: rotate(-1deg); } }
     </style>
 </head>
 <body>
 
+<div class="game-container">
     <div id="start-screen">
-        <h1>🏭 FUNKSJONS-FABRIKKEN</h1>
+        <h1>🏭 Funksjonsfabrikken</h1>
         <p>Velg nivå for å starte:</p>
         <button class="level-btn" onclick="startGame(1)">Nivå 1: Barn (+ / -)</button>
         <button class="level-btn" onclick="startGame(2)">Nivå 2: Ungdom (Blandet)</button>
         <button class="level-btn" onclick="startGame(3)">Nivå 3: VGS (x²)</button>
     </div>
 
-    <div id="game-screen">
-        <div class="main-grid">
-            <div class="keypad">
-                <div style="grid-column: span 2; text-align: center; font-size: 0.8rem; margin-bottom: 5px;">TEST ET TALL:</div>
-                <button class="btn" onclick="runFactory(1)">1</button>
-                <button class="btn" onclick="runFactory(2)">2</button>
-                <button class="btn" onclick="runFactory(3)">3</button>
-                <button class="btn" onclick="runFactory(4)">4</button>
-                <button class="btn" onclick="runFactory(5)">5</button>
-                <button class="btn" onclick="runFactory(0)">0</button>
-            </div>
+    <div id="game-screen" style="display:none;">
+        <div class="header">
+            <button onclick="location.reload()" style="background:none; border:1px solid #555; color:#888; cursor:pointer; padding:5px 10px; border-radius:5px;">Avbryt</button>
+            <div id="lvl-tag">Nivå</div>
+        </div>
 
-            <div class="factory-box" id="machine">
+        <div class="game-grid">
+            <div class="machine-area" id="machine">
                 <div class="ball" id="ball"></div>
-                <div id="status">KLAR</div>
+                <div id="m-text" style="color:rgba(255,255,255,0.2); font-weight:bold; letter-spacing:5px;">FABRIKK</div>
             </div>
-
-            <div class="log" id="log">
-                <div style="border-bottom: 1px solid #444; padding-bottom: 5px;">HISTORIKK</div>
-            </div>
-
-            <div class="math-keyboard">
-                <div style="text-align: center; margin-bottom: 10px;">GJETT FUNKSJONEN:</div>
-                <div class="input-display" id="guessDisplay">f(x) = </div>
-                <div class="math-keys">
-                    <button class="m-btn" onclick="addChar('x')">x</button>
-                    <button class="m-btn" onclick="addChar('+')">+</button>
-                    <button class="m-btn" onclick="addChar('-')">-</button>
-                    <button class="m-btn" onclick="addChar('·')">·</button>
-                    <button class="m-btn" onclick="addChar('^2')">x²</button>
-                    <button class="m-btn" onclick="addChar('2')">2</button>
-                    <button class="m-btn" onclick="addChar('3')">3</button>
-                    <button class="m-btn" onclick="addChar('4')">4</button>
-                    <button class="m-btn" onclick="addChar('5')">5</button>
-                    <button class="m-btn clear" onclick="clearGuess()">Slett</button>
-                    <button class="m-btn special" onclick="checkGuess()">SJEKK SVAR</button>
-                </div>
-                <p id="feedback" style="text-align: center; font-weight: bold; margin-top: 15px;"></p>
-                <button onclick="showHint()" style="display:block; margin: 0 auto; background: none; border: none; color: #3498db; cursor: pointer;">Trenger du et hint?</button>
+            <div class="log-area" id="log">
+                <div style="font-size:0.7rem; color:#666; margin-bottom:10px;">HISTORIKK (x ➔ y)</div>
             </div>
         </div>
+
+        <div class="keypad-label">TEST ET TALL (x):</div>
+        <div class="key-grid">
+            <button class="key" onclick="runFactory(1)">1</button>
+            <button class="key" onclick="runFactory(2)">2</button>
+            <button class="key" onclick="runFactory(3)">3</button>
+            <button class="key" onclick="runFactory(4)">4</button>
+            <button class="key" onclick="runFactory(5)">5</button>
+            <button class="key" onclick="runFactory(6)">6</button>
+            <button class="key" onclick="runFactory(7)">7</button>
+            <button class="key" onclick="runFactory(8)">8</button>
+            <button class="key" onclick="runFactory(9)">9</button>
+            <button class="key" onclick="runFactory(0)">0</button>
+        </div>
+
+        <hr style="margin:25px 0; border:0; border-top:1px solid #333;">
+
+        <div class="keypad-label">GJETT FUNKSJONEN:</div>
+        <div class="display-box" id="guessDisplay">f(x) = </div>
+        
+        <div class="key-grid">
+            <button class="key op" onclick="addChar('x')">x</button>
+            <button class="key op" onclick="addChar('+')">+</button>
+            <button class="key op" onclick="addChar('-')">-</button>
+            <button class="key op" onclick="addChar('·')">·</button>
+            <button class="key op" onclick="addChar('^2')">x²</button>
+            
+            <button class="key" onclick="addChar('1')">1</button>
+            <button class="key" onclick="addChar('2')">2</button>
+            <button class="key" onclick="addChar('3')">3</button>
+            <button class="key" onclick="addChar('4')">4</button>
+            <button class="key" onclick="addChar('5')">5</button>
+            
+            <button class="key" onclick="addChar('6')">6</button>
+            <button class="key" onclick="addChar('7')">7</button>
+            <button class="key" onclick="addChar('8')">8</button>
+            <button class="key" onclick="addChar('9')">9</button>
+            <button class="key" onclick="addChar('0')">0</button>
+            
+            <button class="key clear" onclick="clearGuess()">Slett</button>
+            <button class="key action" onclick="checkGuess()">SJEKK SVAR</button>
+            <button class="key op" onclick="showHint()">Hint</button>
+        </div>
+        <div id="feedback" style="text-align:center; margin-top:15px; font-weight:bold; min-height:20px;"></div>
     </div>
+</div>
 
-    <script>
-        let currentLevel = 1;
-        let currentFunc = {};
-        let isProcessing = false;
-        let userGuess = "";
+<script>
+    let currentLevel = 1;
+    let currentFunc = {};
+    let isProcessing = false;
+    let userGuess = "";
 
-        function startGame(lvl) {
-            currentLevel = lvl;
-            document.getElementById('start-screen').style.display = 'none';
-            document.getElementById('game-screen').style.display = 'block';
-            generateNewFunction();
+    function startGame(lvl) {
+        currentLevel = lvl;
+        document.getElementById('start-screen').style.display = 'none';
+        document.getElementById('game-screen').style.display = 'block';
+        document.getElementById('lvl-tag').innerText = "Nivå " + lvl;
+        generateNewFunction();
+    }
+
+    function generateNewFunction() {
+        const n = Math.floor(Math.random() * 9) + 1;
+        const a = Math.floor(Math.random() * 4) + 2;
+        if (currentLevel === 1) {
+            const op = Math.random() > 0.5 ? '+' : '-';
+            currentFunc = { calc: (x) => op === '+' ? x + n : x - n, ans: `x${op}${n}`, hint: `Noe med ${op}` };
+        } else if (currentLevel === 2) {
+            const type = Math.floor(Math.random() * 2);
+            currentFunc = (type === 0) ? 
+                { calc: (x) => a * x, ans: `${a}x`, hint: "Multiplikasjon" } : 
+                { calc: (x) => a * x + n, ans: `${a}x+${n}`, hint: "To operasjoner" };
+        } else {
+            currentFunc = { calc: (x) => Math.pow(x, 2) + n, ans: `x^2+${n}`, hint: "x i andre potens" };
         }
+        currentFunc.ans = currentFunc.ans.replace("+-", "-");
+        userGuess = "";
+        updateDisplay();
+    }
 
-        function generateNewFunction() {
-            const n = Math.floor(Math.random() * 9) + 1;
-            const a = Math.floor(Math.random() * 4) + 2;
-            
-            if (currentLevel === 1) {
-                const op = Math.random() > 0.5 ? '+' : '-';
-                currentFunc = { calc: (x) => op === '+' ? x + n : x - n, ans: `x${op}${n}`, hint: `Maskinen bruker ${op}` };
-            } else if (currentLevel === 2) {
-                const type = Math.floor(Math.random() * 2);
-                if (type === 0) {
-                    currentFunc = { calc: (x) => a * x, ans: `${a}x`, hint: "Ganging" };
-                } else {
-                    currentFunc = { calc: (x) => a * x + n, ans: `${a}x+${n}`, hint: "Ganging og pluss" };
-                }
-            } else {
-                currentFunc = { calc: (x) => Math.pow(x, 2) + n, ans: `x^2+${n}`, hint: "Tallet opphøyes i 2." };
-            }
-            currentFunc.ans = currentFunc.ans.replace("+-", "-").replace("·", "");
-            userGuess = "";
-            updateDisplay();
-        }
+    function addChar(c) { userGuess += c; updateDisplay(); }
+    function clearGuess() { userGuess = ""; updateDisplay(); }
+    function updateDisplay() { document.getElementById('guessDisplay').innerText = "f(x) = " + userGuess; }
+    function showHint() { alert("Hint: " + currentFunc.hint); }
 
-        function addChar(char) {
-            userGuess += char;
-            updateDisplay();
-        }
+    function runFactory(val) {
+        if (isProcessing) return;
+        isProcessing = true;
+        const ball = document.getElementById('ball');
+        const machine = document.getElementById('machine');
+        ball.innerText = val;
+        ball.style.transition = 'none'; ball.style.left = '-60px'; ball.style.opacity = '1';
+        machine.classList.add('working');
 
-        function clearGuess() {
-            userGuess = "";
-            updateDisplay();
-        }
-
-        function updateDisplay() {
-            document.getElementById('guessDisplay').innerText = "f(x) = " + userGuess;
-        }
-
-        function runFactory(val) {
-            if (isProcessing) return;
-            isProcessing = true;
-            const ball = document.getElementById('ball');
-            const machine = document.getElementById('machine');
-            
-            ball.innerText = val;
-            ball.style.transition = 'none';
-            ball.style.left = '-60px';
-            ball.style.opacity = '1';
-            machine.classList.add('working');
-
-            setTimeout(() => {
-                ball.style.transition = '1s ease-in-out';
-                ball.style.left = '45%';
-            }, 50);
-
-            setTimeout(() => {
-                const result = currentFunc.calc(val);
-                ball.innerText = result;
-                ball.style.left = '110%';
-                addToLog(val, result);
-                machine.classList.remove('working');
-            }, 1100);
-
-            setTimeout(() => {
-                ball.style.opacity = '0';
-                isProcessing = false;
-            }, 2100);
-        }
-
-        function addToLog(x, y) {
-            const log = document.getElementById('log');
+        setTimeout(() => { ball.style.transition = '1s ease-in-out'; ball.style.left = '45%'; }, 50);
+        setTimeout(() => {
+            const res = currentFunc.calc(val);
+            ball.innerText = res; ball.style.left = '110%';
             const entry = document.createElement('div');
-            entry.style.padding = "5px";
-            entry.style.borderBottom = "1px solid #333";
-            entry.innerHTML = `Inn: ${x} ➔ Ut: <span style="color:var(--accent)">${y}</span>`;
+            entry.innerHTML = `${val} ➔ <span style="color:var(--accent)">${res}</span>`;
+            const log = document.getElementById('log');
             log.insertBefore(entry, log.firstChild.nextSibling);
-        }
+            machine.classList.remove('working');
+        }, 1100);
+        setTimeout(() => { ball.style.opacity = '0'; isProcessing = false; }, 2100);
+    }
 
-        function checkGuess() {
-            // Vi renser både gjetning og svar for å sammenligne (fjerner gagnetegn for enkelhets skyld)
-            let processedGuess = userGuess.replace(/·/g, '').replace(/\^2/g, 'x2');
-            let processedAns = currentFunc.ans.replace(/\^2/g, 'x2');
-            const feedback = document.getElementById('feedback');
-
-            if (processedGuess === processedAns) {
-                feedback.innerHTML = "🎉 HELT RIKTIG! Ny fabrikk klargjøres...";
-                setTimeout(() => {
-                    document.getElementById('log').innerHTML = '<div style="border-bottom: 1px solid #444; padding-bottom: 5px;">HISTORIKK</div>';
-                    feedback.innerText = '';
-                    generateNewFunction();
-                }, 2000);
-            } else {
-                feedback.innerHTML = "❌ Ikke helt riktig ennå. Prøv flere tall!";
-            }
+    function checkGuess() {
+        let guess = userGuess.replace(/·/g, '').replace(/\^2/g, 'x2');
+        let ans = currentFunc.ans.replace(/\^2/g, 'x2');
+        const fb = document.getElementById('feedback');
+        if (guess === ans) {
+            fb.innerHTML = "<span style='color:var(--success)'>🏆 RIKTIG! Ny maskin klargjøres...</span>";
+            setTimeout(() => { 
+                document.getElementById('log').innerHTML = '<div style="font-size:0.7rem; color:#666; margin-bottom:10px;">HISTORIKK</div>';
+                fb.innerText = ''; generateNewFunction(); 
+            }, 2000);
+        } else {
+            fb.innerHTML = "<span style='color:#e74c3c'>❌ Ikke helt riktig ennå!</span>";
         }
-
-        function showHint() {
-            alert("Hint: " + currentFunc.hint);
-        }
-    </script>
+    }
+</script>
 </body>
 </html>
