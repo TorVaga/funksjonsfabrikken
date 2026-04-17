@@ -1,3 +1,185 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funksjonsfabrikken 🏭</title>
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --panel: #16213e;
+            --accent: #f39c12;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --info: #0984e3;
+            --text: #e9ecef;
+            --key: #2d3436;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--primary);
+            color: var(--text);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 750px;
+            background: var(--panel);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+        }
+
+        #start-screen { text-align: center; padding: 40px; }
+        .level-btn {
+            display: block; width: 100%; padding: 20px; margin: 12px 0;
+            background: var(--accent); color: white; border: none;
+            border-radius: 10px; font-size: 1.2rem; cursor: pointer; font-weight: bold;
+        }
+
+        .header { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
+        .btn-menu { background: #2d3436; border: none; color: #aaa; padding: 6px 12px; border-radius: 5px; cursor: pointer; }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .box {
+            background: rgba(0,0,0,0.3);
+            border: 2px solid #2d3436;
+            border-radius: 12px;
+            height: 140px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .machine { display: flex; justify-content: center; align-items: center; }
+        .log { padding: 10px; font-size: 0.85rem; overflow-y: auto; }
+        .log-title { font-size: 0.65rem; color: #636e72; text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
+
+        .ball {
+            width: 40px; height: 40px; background: var(--accent);
+            border-radius: 50%; display: flex; justify-content: center;
+            align-items: center; position: absolute; left: -50px; 
+            font-weight: bold; color: white; z-index: 10;
+        }
+
+        .section-label { font-size: 0.8rem; font-weight: bold; color: var(--accent); margin-bottom: 8px; text-transform: uppercase; }
+        
+        .key-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .key {
+            height: 48px; background: var(--key); color: white;
+            border: none; border-radius: 8px; cursor: pointer; font-size: 1.1rem;
+            border-bottom: 3px solid #1a1a1a;
+        }
+        .key:active { transform: translateY(2px); border-bottom-width: 1px; }
+        .key.op { background: var(--info); border-bottom-color: #0652dd; }
+        .key.action { background: var(--success); border-bottom-color: #1b663e; font-weight: bold; }
+        .key.clear { background: var(--danger); border-bottom-color: #a52a2a; }
+
+        .display-box {
+            background: #fff; color: #222; padding: 15px;
+            border-radius: 10px; font-size: 1.8rem; font-weight: bold;
+            text-align: center; margin: 10px 0; border: 3px solid #dfe6e9;
+        }
+
+        .hidden { display: none !important; }
+        .working { animation: vibrate 0.1s infinite; }
+        @keyframes vibrate { 0% { transform: translate(1px, 1px); } 100% { transform: translate(-1px, -1px); } }
+
+        @media (max-width: 500px) {
+            .dashboard { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <div id="start-screen">
+        <h1 style="color: var(--accent);">🏭 FUNKSJONS-FABRIKKEN</h1>
+        <button class="level-btn" onclick="startGame(1)">NIVÅ 1: BARNESKOLE</button>
+        <button class="level-btn" onclick="startGame(2)">NIVÅ 2: UNGDOMSSKOLE</button>
+        <button class="level-btn" onclick="startGame(3)">NIVÅ 3: VIDEREGÅENDE</button>
+    </div>
+
+    <div id="game-screen" class="hidden">
+        <div class="header">
+            <button class="btn-menu" onclick="location.reload()">⬅ MENY</button>
+            <div id="lvl-tag" style="font-weight:bold; color: var(--accent);">NIVÅ 1</div>
+        </div>
+
+        <div class="dashboard">
+            <div class="box machine" id="machine">
+                <div class="ball" id="ball"></div>
+                <div style="color:rgba(255,255,255,0.05); font-weight: 900;">FABRIKK</div>
+            </div>
+            <div class="box log" id="log">
+                <div class="log-title">Logg (x ➔ y)</div>
+                <div id="log-content"></div>
+            </div>
+        </div>
+
+        <div class="section-label">1. Test tall:</div>
+        <div class="key-grid">
+            <button class="key" onclick="runFactory(1)">1</button>
+            <button class="key" onclick="runFactory(2)">2</button>
+            <button class="key" onclick="runFactory(3)">3</button>
+            <button class="key" onclick="runFactory(4)">4</button>
+            <button class="key" onclick="runFactory(5)">5</button>
+            <button class="key" onclick="runFactory(6)">6</button>
+            <button class="key" onclick="runFactory(7)">7</button>
+            <button class="key" onclick="runFactory(8)">8</button>
+            <button class="key" onclick="runFactory(9)">9</button>
+            <button class="key" onclick="runFactory(0)">0</button>
+        </div>
+
+        <div class="section-label">2. Gjett f(x):</div>
+        <div class="display-box" id="guessDisplay">f(x) = </div>
+        
+        <div class="key-grid">
+            <button class="key op" onclick="addChar('x')">x</button>
+            <button class="key op" onclick="addChar('+')">+</button>
+            <button class="key op" onclick="addChar('-')">−</button>
+            <button class="key op" onclick="addChar('·')">·</button>
+            <button id="powBtn" class="key op hidden" onclick="addChar('^2')">x²</button>
+        </div>
+
+        <div class="key-grid">
+            <button class="key" onclick="addChar('1')">1</button>
+            <button class="key" onclick="addChar('2')">2</button>
+            <button class="key" onclick="addChar('3')">3</button>
+            <button class="key" onclick="addChar('4')">4</button>
+            <button class="key" onclick="addChar('5')">5</button>
+            <button class="key" onclick="addChar('6')">6</button>
+            <button class="key" onclick="addChar('7')">7</button>
+            <button class="key" onclick="addChar('8')">8</button>
+            <button class="key" onclick="addChar('9')">9</button>
+            <button class="key" onclick="addChar('0')">0</button>
+        </div>
+
+        <div class="key-grid">
+            <button class="key clear" onclick="clearGuess()">Slett</button>
+            <button class="key action" style="grid-column: span 3" onclick="checkGuess()">SJEKK SVAR</button>
+            <button class="key op" onclick="showHint()">Hint</button>
+        </div>
+        <div id="feedback" style="text-align:center; font-weight:bold; min-height:20px; font-size: 0.9rem;"></div>
+    </div>
+</div>
+
 <script>
     let currentLevel = 1;
     let currentFunc = {};
@@ -18,7 +200,7 @@
         const a = Math.floor(Math.random() * 4) + 2;
         if (currentLevel === 1) {
             const op = Math.random() > 0.5 ? '+' : '-';
-            currentFunc = { calc: (x) => op === '+' ? x + n : x - n, ans: `x${op}${n}`, hint: `Noe med ${op}` };
+            currentFunc = { calc: (x) => op === '+' ? x + n : x - n, ans: `x${op}${n}`, hint: `Bruker ${op}` };
         } else if (currentLevel === 2) {
             const type = Math.floor(Math.random() * 2);
             currentFunc = (type === 0) ? 
@@ -59,41 +241,24 @@
         setTimeout(() => { ball.style.opacity = '0'; isProcessing = false; }, 1800);
     }
 
-    // NY OG FORBEDRET SJEKK-FUNKSJON
     function checkGuess() {
         const fb = document.getElementById('feedback');
-        
-        // Rens gjetning og svar for sammenligning
         let cleanGuess = userGuess.replace(/·/g, '').replace(/−/g, '-').replace(/\s+/g, '');
         let cleanAns = currentFunc.ans.replace(/·/g, '').replace(/-/g, '-').replace(/\s+/g, '');
 
-        // 1. Direkte match (f.eks. 4x === 4x)
-        if (cleanGuess === cleanAns) {
-            success();
-            return;
-        }
+        if (cleanGuess === cleanAns) { success(); return; }
 
-        // 2. Sjekk for omvendt rekkefølge ved multiplikasjon (f.eks. x4 === 4x)
-        // Vi sjekker om det bare er én variabel og ett tall uten pluss/minus
+        // Sjekk x4 vs 4x
         if (currentLevel === 2 && !cleanAns.includes('+') && !cleanAns.includes('-')) {
-            let reversedAns = cleanAns.split('').reverse().join('');
-            if (cleanGuess === reversedAns) {
-                success();
-                return;
-            }
+            if (cleanGuess === cleanAns.split('').reverse().join('')) { success(); return; }
         }
         
-        // 3. Sjekk for x^2+n vs n+x^2 (Kommutativ lov for addisjon)
+        // Sjekk n+x vs x+n
         if (cleanAns.includes('+')) {
-            let parts = cleanAns.split('+');
-            let reversedAns = parts[1] + '+' + parts[0];
-            if (cleanGuess === reversedAns) {
-                success();
-                return;
-            }
+            let p = cleanAns.split('+');
+            if (cleanGuess === (p[1] + '+' + p[0])) { success(); return; }
         }
 
-        // Hvis ingen av de over stemmer:
         fb.innerHTML = "<span style='color:var(--danger)'>❌ Ikke helt rett, prøv igjen!</span>";
 
         function success() {
@@ -106,3 +271,5 @@
         }
     }
 </script>
+</body>
+</html>
