@@ -41,17 +41,19 @@
         .progress-fill { background: var(--success); height: 100%; width: 0%; transition: width 0.5s ease; }
 
         .dashboard { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        @media (max-width: 700px) { .dashboard { grid-template-columns: 1fr; } }
 
-        /* Maskinområde med dedikerte plasser for Tall inn/ut */
+        /* Oppdatert Maskinområde */
         .machine-area {
             display: flex;
             flex-direction: column;
             gap: 15px;
             align-items: center;
             background: #2c3e50;
-            padding: 20px;
+            padding: 25px;
             border-radius: 12px;
             color: white;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
         }
 
         .io-display {
@@ -63,62 +65,75 @@
 
         .io-box {
             background: rgba(255,255,255,0.1);
-            border: 2px dashed rgba(255,255,255,0.3);
-            border-radius: 8px;
-            width: 80px;
-            height: 60px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 10px;
+            width: 100px;
+            height: 80px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            transition: border-color 0.3s;
         }
 
-        .io-box span { font-size: 0.7rem; opacity: 0.7; margin-bottom: 2px; }
-        .io-value { font-size: 1.4rem; font-weight: bold; }
+        .io-box span { font-size: 0.75rem; font-weight: bold; opacity: 0.8; margin-bottom: 5px; color: #f39c12; }
+        
+        /* Gjør tallene mer synlige */
+        .io-value { 
+            font-size: 2.2rem; 
+            font-weight: 800; 
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
         .factory-core {
             width: 100%;
-            height: 60px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 8px;
+            height: 50px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 30px;
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
             overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .ball {
-            width: 35px; height: 35px; background: #f39c12;
+            width: 38px; height: 38px; background: #f39c12;
             border-radius: 50%; display: flex; justify-content: center;
             align-items: center; position: absolute; left: -50px;
             font-weight: bold; color: white;
+            box-shadow: 0 0 15px rgba(243, 156, 18, 0.5);
         }
 
         .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-        .btn { padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: white; cursor: pointer; font-weight: 600; }
+        .btn { padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: white; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .btn:hover { background: #f8f9fa; border-color: #ccd0d5; }
         .btn-op { background: #e7f3ff; color: #1877f2; border: none; }
         .btn-main { background: var(--success); color: white; border: none; grid-column: span 3; }
         .btn-clear { background: #fce9e9; color: var(--danger); border: none; }
 
         .display { background: #f0f2f5; padding: 15px; border-radius: 10px; font-size: 1.8rem; font-weight: bold; text-align: center; margin: 10px 0; border: 2px solid var(--border); }
-        .log-item { padding: 6px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; font-family: monospace; }
+        .log-item { padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; font-weight: 600; color: #4b4f56; }
         .hidden { display: none !important; }
+        .working { animation: pulse 0.8s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div id="start-screen" class="card" style="text-align: center;">
-        <h1>Funksjonsfabrikken 🏭</h1>
-        <button class="btn" style="width:100%; margin-bottom:10px;" onclick="startGame(1)">Nivå 1</button>
-        <button class="btn" style="width:100%; margin-bottom:10px;" onclick="startGame(2)">Nivå 2</button>
-        <button class="btn" style="width:100%;" onclick="startGame(3)">Nivå 3</button>
+        <h1 style="color:var(--accent);">Funksjonsfabrikken 🏭</h1>
+        <button class="btn" style="width:100%; margin-bottom:10px; background:var(--accent); color:white;" onclick="startGame(1)">Nivå 1: Barneskole</button>
+        <button class="btn" style="width:100%; margin-bottom:10px; background:var(--accent); color:white;" onclick="startGame(2)">Nivå 2: Ungdomsskole</button>
+        <button class="btn" style="width:100%; background:var(--accent); color:white;" onclick="startGame(3)">Nivå 3: Videregående</button>
     </div>
 
     <div id="game-screen" class="hidden">
         <div class="card streak-container">
-            <span style="font-weight:bold;">STREAK: <span id="streak-count">0</span> 🔥</span>
+            <span style="font-weight:bold;">STREAK: <span id="streak-count" style="color:var(--success)">0</span> 🔥</span>
             <div class="progress-bg"><div id="progress-bar" class="progress-fill"></div></div>
         </div>
 
@@ -127,19 +142,19 @@
                 <div class="card" style="padding: 15px;">
                     <div class="machine-area" id="machine">
                         <div class="io-display">
-                            <div class="io-box"><span>INN</span><div class="io-value" id="disp-in">-</div></div>
-                            <div class="io-box"><span>UT</span><div class="io-value" id="disp-out">-</div></div>
+                            <div class="io-box" id="box-in"><span>INN</span><div class="io-value" id="disp-in">-</div></div>
+                            <div class="io-box" id="box-out"><span>UT</span><div class="io-value" id="disp-out">-</div></div>
                         </div>
                         <div class="factory-core">
                             <div class="ball" id="ball"></div>
-                            <span style="opacity: 0.1; font-size: 0.8rem;">PROSESSERER...</span>
+                            <span id="proc-text" style="opacity: 0.2; font-size: 0.7rem; font-weight: bold; letter-spacing: 1px;">KLAR FOR TALL</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="card">
-                    <span style="font-size:0.8rem; font-weight:bold; color:#606770;">TEST TALL:</span>
-                    <div class="grid">
+                    <span style="font-size:0.8rem; font-weight:bold; color:#606770; text-transform:uppercase;">1. Velg et tall (x):</span>
+                    <div class="grid" style="margin-top:10px;">
                         <button class="btn" onclick="runFactory(1)">1</button>
                         <button class="btn" onclick="runFactory(2)">2</button>
                         <button class="btn" onclick="runFactory(3)">3</button>
@@ -155,12 +170,15 @@
             </div>
 
             <div class="card">
-                <span style="font-size:0.8rem; font-weight:bold; color:#606770;">HISTORIKK:</span>
-                <div id="log-content"></div>
+                <span style="font-size:0.8rem; font-weight:bold; color:#606770; text-transform:uppercase;">Historikk:</span>
+                <div id="log-content" style="margin-top:10px;">
+                    <p style="color:#90949c; font-size:0.8rem;">Ingen tester ennå.</p>
+                </div>
             </div>
         </div>
 
         <div class="card">
+            <span style="font-size:0.8rem; font-weight:bold; color:#606770; text-transform:uppercase;">2. Hva tror du regelen er?</span>
             <div class="display" id="guessDisplay">f(x) = </div>
             <div class="grid" style="margin-bottom:10px;">
                 <button class="btn btn-op" onclick="addChar('x')">x</button>
@@ -186,13 +204,13 @@
                 <button class="btn btn-main" onclick="checkGuess()">SJEKK SVAR</button>
                 <button class="btn" onclick="showHint()">Hint</button>
             </div>
-            <div id="feedback" style="text-align:center; margin-top:10px; font-weight:bold;"></div>
+            <div id="feedback" style="text-align:center; margin-top:15px; font-weight:bold; min-height:20px;"></div>
         </div>
     </div>
 </div>
 
 <script>
-    let currentFunc = {}, streak = 0, userGuess = "", isProcessing = false;
+    let currentFunc = {}, streak = 0, userGuess = "", isProcessing = false, currentLevel = 1;
     let lastIn = null, lastOut = null;
 
     function startGame(lvl) {
@@ -214,29 +232,30 @@
             currentFunc = { calc: (x) => Math.pow(x, 2) + n, ans: `x^2+${n}` };
         }
         userGuess = ""; updateDisplay();
-        // Nullstill visning for ny maskin
         lastIn = null; lastOut = null;
         document.getElementById('disp-in').innerText = "-";
         document.getElementById('disp-out').innerText = "-";
+        document.getElementById('log-content').innerHTML = '<p style="color:#90949c; font-size:0.8rem;">Ingen tester ennå.</p>';
     }
 
     function runFactory(val) {
         if (isProcessing) return;
         
-        // 1. FLYTT FORRIGE TIL LOGG (hvis det finnes noe)
         if (lastIn !== null) {
             const logBox = document.getElementById('log-content');
+            if (logBox.innerHTML.includes("Ingen tester")) logBox.innerHTML = "";
             const item = document.createElement('div');
             item.className = "log-item";
-            item.innerHTML = `<span>${lastIn}</span> <span>➔</span> <span>${lastOut}</span>`;
+            item.innerHTML = `<span>In: ${lastIn}</span> <span style="color:var(--accent)">➔</span> <span>Ut: ${lastOut}</span>`;
             logBox.insertBefore(item, logBox.firstChild);
         }
 
-        // 2. START NY PROSESS
         isProcessing = true;
         lastIn = val;
         document.getElementById('disp-in').innerText = val;
         document.getElementById('disp-out').innerText = "?";
+        document.getElementById('proc-text').innerText = "PROSESSERER...";
+        document.getElementById('proc-text').classList.add('working');
         
         const ball = document.getElementById('ball');
         ball.innerText = val;
@@ -257,6 +276,8 @@
         setTimeout(() => {
             ball.style.opacity = '0';
             isProcessing = false;
+            document.getElementById('proc-text').innerText = "FERDIG!";
+            document.getElementById('proc-text').classList.remove('working');
         }, 1800);
     }
 
@@ -275,24 +296,20 @@
 
     function updateUI(correct) {
         document.getElementById('streak-count').innerText = streak;
-        document.getElementById('progress-bar').style.width = (streak % 5) * 20 + "%";
+        document.getElementById('progress-bar').style.width = Math.min((streak / 5) * 100, 100) + "%";
         const fb = document.getElementById('feedback');
         if (correct) {
-            fb.innerHTML = "<span style='color:var(--success)'>RIKTIG!</span>";
-            setTimeout(() => { 
-                document.getElementById('log-content').innerHTML = '';
-                generateNewFunction(); 
-                fb.innerText = "";
-            }, 1200);
+            fb.innerHTML = "<span style='color:var(--success)'>⭐ RIKTIG! Ny regel laget.</span>";
+            setTimeout(() => { generateNewFunction(); fb.innerText = ""; }, 1500);
         } else {
-            fb.innerHTML = "<span style='color:var(--danger)'>FEIL!</span>";
+            fb.innerHTML = "<span style='color:var(--danger)'>❌ Ikke helt rett, prøv igjen!</span>";
         }
     }
 
     function addChar(c) { userGuess += c; updateDisplay(); }
     function clearGuess() { userGuess = ""; updateDisplay(); }
     function updateDisplay() { document.getElementById('guessDisplay').innerText = "f(x) = " + userGuess; }
-    function showHint() { alert("Hint: Prøv å se på sammenhengen mellom inn og ut!"); }
+    function showHint() { alert("Hint: Prøv å se på sammenhengen mellom inn-tallet og ut-tallet!"); }
 </script>
 </body>
 </html>
