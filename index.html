@@ -29,10 +29,11 @@
         #start-screen {
             text-align: center;
             background: var(--panel);
-            padding: 50px;
+            padding: 40px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             border: 4px solid var(--accent);
+            max-width: 500px;
         }
 
         .level-btn {
@@ -62,6 +63,15 @@
             position: relative;
         }
 
+        .instructions {
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            border-left: 4px solid var(--accent);
+        }
+
         .factory-layout {
             display: grid;
             grid-template-columns: 150px 1fr 200px;
@@ -69,7 +79,7 @@
             align-items: center;
         }
 
-        /* Siffer-knapper (Keypad) */
+        /* Keypad */
         .keypad {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -91,7 +101,7 @@
 
         /* Maskinen */
         .machine-core {
-            height: 200px;
+            height: 180px;
             background: #1e272e;
             border: 8px solid #485460;
             border-radius: 20px;
@@ -101,18 +111,6 @@
             justify-content: center;
             align-items: center;
         }
-
-        .conveyor-belt {
-            position: absolute;
-            bottom: 20px;
-            width: 100%;
-            height: 10px;
-            background: repeating-linear-gradient(90deg, #111, #111 20px, #333 20px, #333 40px);
-            animation: moveBelt 1s linear infinite;
-            animation-play-state: paused;
-        }
-
-        @keyframes moveBelt { from { background-position: 0 0; } to { background-position: 40px 0; } }
 
         .ball {
             width: 50px;
@@ -125,15 +123,14 @@
             font-weight: bold;
             position: absolute;
             left: -60px;
-            transition: 1s cubic-bezier(0.45, 0.05, 0.55, 0.95);
+            z-index: 10;
         }
 
-        /* Logg og svar */
         .output-zone {
             background: rgba(0,0,0,0.3);
             padding: 15px;
             border-radius: 10px;
-            height: 300px;
+            height: 250px;
             overflow-y: auto;
         }
 
@@ -142,105 +139,150 @@
             margin-top: 20px;
             padding: 20px;
             border-top: 2px solid #555;
+            text-align: center;
         }
 
         input[type="text"] {
-            padding: 10px;
-            width: 200px;
+            padding: 12px;
+            width: 180px;
             border-radius: 5px;
             border: none;
+            font-size: 1rem;
         }
 
-        .status-light {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #c0392b;
-            margin: 0 auto 10px;
+        .hint-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
         }
 
-        .working .status-light { background: #27ae60; box-shadow: 0 0 10px #27ae60; }
-        .working .conveyor-belt { animation-play-state: running; }
+        .hint-text {
+            display: block;
+            margin-top: 10px;
+            color: #3498db;
+            font-style: italic;
+            min-height: 20px;
+        }
 
+        .working { animation: shake 0.2s infinite; }
+        @keyframes shake {
+            0% { transform: translate(1px, 1px); }
+            50% { transform: translate(-1px, -1px); }
+            100% { transform: translate(1px, -1px); }
+        }
     </style>
 </head>
 <body>
 
     <div id="start-screen">
         <h1>🏭 FUNKSJONS-FABRIKKEN</h1>
-        <p>Velg ditt vanskelighetsnivå:</p>
-        <button class="level-btn" onclick="startGame(1)">Nivå 1: Barneskole (+/-)</button>
-        <button class="level-btn" onclick="startGame(2)">Nivå 2: Ungdomsskole (ax + b)</button>
-        <button class="level-btn" onclick="startGame(3)">Nivå 3: VGS (x² og mer)</button>
+        <p><strong>Slik spiller du:</strong></p>
+        <ul style="text-align: left; font-size: 0.9rem;">
+            <li>1. Send tall inn i maskinen ved å trykke på knappene.</li>
+            <li>2. Se hvilket tall som kommer ut på høyre side.</li>
+            <li>3. Finn mønsteret og skriv inn funksjonen (f.eks. x + 2).</li>
+        </ul>
+        <button class="level-btn" onclick="startGame(1)">Nivå 1: Barneskole</button>
+        <button class="level-btn" onclick="startGame(2)">Nivå 2: Ungdomsskole</button>
+        <button class="level-btn" onclick="startGame(3)">Nivå 3: VGS</button>
     </div>
 
     <div id="game-screen">
-        <div style="display:flex; justify-content: space-between; align-items: center;">
-            <button onclick="location.reload()" style="background:none; color:#aaa; border:1px solid #aaa; cursor:pointer;">Tilbake</button>
-            <h2 id="levelDisplay">Nivå</h2>
-            <div id="score">Riktige: 0</div>
+        <div class="instructions">
+            💡 <strong>Oppgave:</strong> Finn ut hva maskinen gjør med <em>x</em> for å få <em>y</em>.
         </div>
 
         <div class="factory-layout">
-            <div class="keypad">
+            <div class="keypad" id="keypad">
                 <button class="num-btn" onclick="runFactory(1)">1</button>
                 <button class="num-btn" onclick="runFactory(2)">2</button>
                 <button class="num-btn" onclick="runFactory(3)">3</button>
                 <button class="num-btn" onclick="runFactory(4)">4</button>
                 <button class="num-btn" onclick="runFactory(5)">5</button>
-                <button class="num-btn" onclick="runFactory(6)">6</button>
-                <button class="num-btn" onclick="runFactory(7)">7</button>
-                <button class="num-btn" onclick="runFactory(8)">8</button>
-                <button class="num-btn" onclick="runFactory(9)">9</button>
                 <button class="num-btn" onclick="runFactory(0)">0</button>
             </div>
 
             <div class="machine-core" id="machine">
-                <div class="status-light"></div>
-                <div id="machineLabel" style="font-size: 0.8rem; color: #555;">SISTEM OK</div>
                 <div class="ball" id="ball"></div>
-                <div class="conveyor-belt"></div>
+                <div style="color: #444; font-weight: bold;">FABRIKK-MODUL</div>
             </div>
 
             <div class="output-zone" id="log">
-                <div style="font-size:0.8rem; border-bottom:1px solid #555; margin-bottom:10px;">HISTORIKK (X ➜ Y)</div>
+                <div style="font-size:0.7rem; color:#888; margin-bottom:10px;">HISTORIKK (x ➔ y)</div>
             </div>
 
             <div class="guess-box">
-                <h3>Hva er funksjonen?</h3>
-                <input type="text" id="guessInput" placeholder="f.eks. x + 3">
-                <button onclick="checkGuess()" style="padding:10px 20px; background:var(--success); border:none; color:white; border-radius:5px; cursor:pointer;">SJEKK SVAR</button>
-                <p id="feedback"></p>
+                <input type="text" id="guessInput" placeholder="Svar: x + 5">
+                <button onclick="checkGuess()" style="padding:12px 20px; background:var(--success); border:none; color:white; border-radius:5px; cursor:pointer; font-weight:bold;">SJEKK</button>
+                <button class="hint-btn" onclick="showHint()">HINT?</button>
+                <span id="hintDisplay" class="hint-text"></span>
+                <p id="feedback" style="margin-top:15px; font-weight:bold;"></p>
             </div>
+        </div>
+        
+        <div style="text-align:center; margin-top:20px;">
+            <button onclick="location.reload()" style="background:none; border:none; color:#7f8c8d; text-decoration:underline; cursor:pointer;">Bytt nivå</button>
         </div>
     </div>
 
     <script>
         let currentLevel = 1;
         let currentFunc = {};
-        let score = 0;
         let isProcessing = false;
+        let hintsShown = 0;
 
         function startGame(lvl) {
             currentLevel = lvl;
             document.getElementById('start-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'block';
-            document.getElementById('levelDisplay').innerText = "Nivå " + lvl;
             generateNewFunction();
         }
 
         function generateNewFunction() {
             const n = Math.floor(Math.random() * 9) + 1;
+            const a = Math.floor(Math.random() * 4) + 2;
+            hintsShown = 0;
+            document.getElementById('hintDisplay').innerText = "";
+            
             if (currentLevel === 1) {
                 const op = Math.random() > 0.5 ? '+' : '-';
-                currentFunc = { calc: (x) => op === '+' ? x + n : x - n, ans: `x${op}${n}` };
+                currentFunc = { 
+                    calc: (x) => op === '+' ? x + n : x - n, 
+                    ans: `x${op}${n}`,
+                    hint: `Maskinen bruker ${op === '+' ? 'addisjon' : 'subtraksjon'}.`
+                };
             } else if (currentLevel === 2) {
-                const a = Math.floor(Math.random() * 4) + 2;
-                currentFunc = { calc: (x) => a * x + n, ans: `${a}x+${n}` };
+                const type = Math.floor(Math.random() * 3);
+                if (type === 0) {
+                    const op = Math.random() > 0.5 ? '+' : '-';
+                    currentFunc = { calc: (x) => op === '+' ? x + n : x - n, ans: `x${op}${n}`, hint: "Det er en enkel pluss eller minus." };
+                } else if (type === 1) {
+                    currentFunc = { calc: (x) => a * x, ans: `${a}x`, hint: `Tallet ganges med noe.` };
+                } else {
+                    currentFunc = { calc: (x) => a * x + n, ans: `${a}x+${n}`, hint: `Først ganges x med ${a}, så skjer det noe mer...` };
+                }
             } else {
-                currentFunc = { calc: (x) => Math.pow(x, 2) + n, ans: `x^2+${n}` };
+                currentFunc = { 
+                    calc: (x) => Math.pow(x, 2) + n, 
+                    ans: `x^2+${n}`,
+                    hint: "Tallet opphøyes i andre potens (kvadreres)."
+                };
             }
-            console.log("Svar: " + currentFunc.ans);
+            currentFunc.ans = currentFunc.ans.replace("+-", "-").replace("--", "+");
+        }
+
+        function showHint() {
+            const display = document.getElementById('hintDisplay');
+            if (hintsShown === 0) {
+                display.innerText = "Hint: " + currentFunc.hint;
+            } else {
+                display.innerText = "Svaret starter med: " + currentFunc.ans.substring(0, 2) + "...";
+            }
+            hintsShown++;
         }
 
         function runFactory(val) {
@@ -250,38 +292,37 @@
             const ball = document.getElementById('ball');
             const machine = document.getElementById('machine');
             
-            machine.classList.add('working');
             ball.innerText = val;
             ball.style.transition = 'none';
             ball.style.left = '-60px';
             ball.style.opacity = '1';
+            machine.classList.add('working');
 
-            // Animasjonssekvens
             setTimeout(() => {
                 ball.style.transition = '1s cubic-bezier(0.45, 0.05, 0.55, 0.95)';
-                ball.style.left = '45%'; // Går inn i maskin
+                ball.style.left = '45%';
             }, 50);
 
             setTimeout(() => {
                 const result = currentFunc.calc(val);
                 ball.innerText = result;
-                ball.style.left = '110%'; // Kommer ut
+                ball.style.left = '110%';
                 addToLog(val, result);
-            }, 1200);
+                machine.classList.remove('working');
+            }, 1100);
 
             setTimeout(() => {
                 ball.style.opacity = '0';
-                machine.classList.remove('working');
                 isProcessing = false;
-            }, 2200);
+            }, 2100);
         }
 
         function addToLog(x, y) {
             const log = document.getElementById('log');
             const entry = document.createElement('div');
-            entry.style.padding = "5px";
+            entry.style.padding = "8px";
             entry.style.borderBottom = "1px solid #444";
-            entry.innerHTML = `<strong>${x}</strong> ➜ <span style="color:var(--accent)">${y}</span>`;
+            entry.innerHTML = `Input: <strong>${x}</strong> ➔ Resultat: <strong style="color:var(--accent)">${y}</strong>`;
             log.insertBefore(entry, log.firstChild.nextSibling);
         }
 
@@ -291,17 +332,15 @@
             const feedback = document.getElementById('feedback');
 
             if (guess === correct || guess === "f(x)=" + correct) {
-                feedback.innerHTML = "🌟 RIKTIG! Fabrikken er omstilt.";
-                score++;
-                document.getElementById('score').innerText = "Riktige: " + score;
+                feedback.innerHTML = "<span style='color:var(--success)'>⭐ RIKTIG! Genererer ny maskin...</span>";
                 setTimeout(() => {
-                    document.getElementById('log').innerHTML = '<div style="font-size:0.8rem; border-bottom:1px solid #555; margin-bottom:10px;">HISTORIKK (X ➜ Y)</div>';
+                    document.getElementById('log').innerHTML = '<div style="font-size:0.7rem; color:#888; margin-bottom:10px;">HISTORIKK (x ➔ y)</div>';
                     document.getElementById('guessInput').value = '';
                     feedback.innerText = '';
                     generateNewFunction();
                 }, 2000);
             } else {
-                feedback.innerText = "❌ Det stemmer ikke helt, prøv igjen!";
+                feedback.innerHTML = "<span style='color:#e74c3c'>Prøv igjen! Bruk loggen til å se mønsteret.</span>";
             }
         }
     </script>
