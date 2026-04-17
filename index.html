@@ -9,13 +9,14 @@
             --primary: #2c3e50;
             --accent: #f39c12;
             --success: #27ae60;
-            --bg: #2f3640;
-            --panel: #353b48;
-            --text: #f5f6fa;
+            --bg: #1a1a2e;
+            --panel: #16213e;
+            --text: #e9ecef;
+            --key: #485460;
         }
 
         body {
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
@@ -31,9 +32,7 @@
             background: var(--panel);
             padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 4px solid var(--accent);
-            max-width: 500px;
+            border: 3px solid var(--accent);
         }
 
         .level-btn {
@@ -41,70 +40,56 @@
             width: 100%;
             padding: 15px;
             margin: 10px 0;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             background: var(--accent);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: 0.2s;
         }
-
-        .level-btn:hover { transform: scale(1.05); background: #e67e22; }
 
         /* Spillskjerm */
         #game-screen {
             display: none;
             width: 95%;
-            max-width: 900px;
+            max-width: 1000px;
             background: var(--panel);
-            padding: 30px;
+            padding: 20px;
             border-radius: 20px;
-            position: relative;
         }
 
-        .instructions {
-            background: rgba(0,0,0,0.2);
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-            border-left: 4px solid var(--accent);
-        }
-
-        .factory-layout {
+        .main-grid {
             display: grid;
-            grid-template-columns: 150px 1fr 200px;
+            grid-template-columns: 180px 1fr 220px;
             gap: 20px;
-            align-items: center;
         }
 
-        /* Keypad */
+        /* Tall-tastatur (venstre) */
         .keypad {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            gap: 8px;
         }
 
-        .num-btn {
+        .btn {
             padding: 15px;
-            background: #7f8c8d;
+            background: var(--key);
+            color: white;
             border: none;
             border-radius: 5px;
-            color: white;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             cursor: pointer;
-            box-shadow: 0 4px #444;
+            box-shadow: 0 3px #222;
         }
 
-        .num-btn:active { box-shadow: 0 0; transform: translateY(4px); }
+        .btn:active { box-shadow: none; transform: translateY(3px); }
 
-        /* Maskinen */
-        .machine-core {
-            height: 180px;
-            background: #1e272e;
-            border: 8px solid #485460;
-            border-radius: 20px;
+        /* Fabrikk (midten) */
+        .factory-box {
+            height: 200px;
+            background: #0f3460;
+            border: 5px solid #555;
+            border-radius: 15px;
             position: relative;
             overflow: hidden;
             display: flex;
@@ -113,119 +98,124 @@
         }
 
         .ball {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             background: var(--accent);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-weight: bold;
             position: absolute;
             left: -60px;
-            z-index: 10;
+            font-weight: bold;
         }
 
-        .output-zone {
-            background: rgba(0,0,0,0.3);
+        /* Matte-tastatur (bunn) */
+        .math-keyboard {
+            grid-column: span 3;
+            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .input-display {
+            background: #fff;
+            color: #333;
             padding: 15px;
+            font-size: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            min-height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .math-keys {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .m-btn {
+            padding: 10px 20px;
+            background: #34495e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .m-btn.special { background: var(--success); }
+        .m-btn.clear { background: #c0392b; }
+
+        .log {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
             border-radius: 10px;
             height: 250px;
             overflow-y: auto;
+            font-size: 0.9rem;
         }
 
-        .guess-box {
-            grid-column: span 3;
-            margin-top: 20px;
-            padding: 20px;
-            border-top: 2px solid #555;
-            text-align: center;
-        }
-
-        input[type="text"] {
-            padding: 12px;
-            width: 180px;
-            border-radius: 5px;
-            border: none;
-            font-size: 1rem;
-        }
-
-        .hint-btn {
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
-        .hint-text {
-            display: block;
-            margin-top: 10px;
-            color: #3498db;
-            font-style: italic;
-            min-height: 20px;
-        }
-
-        .working { animation: shake 0.2s infinite; }
-        @keyframes shake {
-            0% { transform: translate(1px, 1px); }
-            50% { transform: translate(-1px, -1px); }
-            100% { transform: translate(1px, -1px); }
-        }
+        .working { animation: vibrate 0.1s infinite; }
+        @keyframes vibrate { 0% { transform: translate(1px); } 100% { transform: translate(-1px); } }
     </style>
 </head>
 <body>
 
     <div id="start-screen">
         <h1>🏭 FUNKSJONS-FABRIKKEN</h1>
-        <p><strong>Slik spiller du:</strong></p>
-        <ul style="text-align: left; font-size: 0.9rem;">
-            <li>1. Send tall inn i maskinen ved å trykke på knappene.</li>
-            <li>2. Se hvilket tall som kommer ut på høyre side.</li>
-            <li>3. Finn mønsteret og skriv inn funksjonen (f.eks. x + 2).</li>
-        </ul>
-        <button class="level-btn" onclick="startGame(1)">Nivå 1: Barneskole</button>
-        <button class="level-btn" onclick="startGame(2)">Nivå 2: Ungdomsskole</button>
-        <button class="level-btn" onclick="startGame(3)">Nivå 3: VGS</button>
+        <p>Velg nivå for å starte:</p>
+        <button class="level-btn" onclick="startGame(1)">Nivå 1: Barn (+ / -)</button>
+        <button class="level-btn" onclick="startGame(2)">Nivå 2: Ungdom (Blandet)</button>
+        <button class="level-btn" onclick="startGame(3)">Nivå 3: VGS (x²)</button>
     </div>
 
     <div id="game-screen">
-        <div class="instructions">
-            💡 <strong>Oppgave:</strong> Finn ut hva maskinen gjør med <em>x</em> for å få <em>y</em>.
-        </div>
-
-        <div class="factory-layout">
-            <div class="keypad" id="keypad">
-                <button class="num-btn" onclick="runFactory(1)">1</button>
-                <button class="num-btn" onclick="runFactory(2)">2</button>
-                <button class="num-btn" onclick="runFactory(3)">3</button>
-                <button class="num-btn" onclick="runFactory(4)">4</button>
-                <button class="num-btn" onclick="runFactory(5)">5</button>
-                <button class="num-btn" onclick="runFactory(0)">0</button>
+        <div class="main-grid">
+            <div class="keypad">
+                <div style="grid-column: span 2; text-align: center; font-size: 0.8rem; margin-bottom: 5px;">TEST ET TALL:</div>
+                <button class="btn" onclick="runFactory(1)">1</button>
+                <button class="btn" onclick="runFactory(2)">2</button>
+                <button class="btn" onclick="runFactory(3)">3</button>
+                <button class="btn" onclick="runFactory(4)">4</button>
+                <button class="btn" onclick="runFactory(5)">5</button>
+                <button class="btn" onclick="runFactory(0)">0</button>
             </div>
 
-            <div class="machine-core" id="machine">
+            <div class="factory-box" id="machine">
                 <div class="ball" id="ball"></div>
-                <div style="color: #444; font-weight: bold;">FABRIKK-MODUL</div>
+                <div id="status">KLAR</div>
             </div>
 
-            <div class="output-zone" id="log">
-                <div style="font-size:0.7rem; color:#888; margin-bottom:10px;">HISTORIKK (x ➔ y)</div>
+            <div class="log" id="log">
+                <div style="border-bottom: 1px solid #444; padding-bottom: 5px;">HISTORIKK</div>
             </div>
 
-            <div class="guess-box">
-                <input type="text" id="guessInput" placeholder="Svar: x + 5">
-                <button onclick="checkGuess()" style="padding:12px 20px; background:var(--success); border:none; color:white; border-radius:5px; cursor:pointer; font-weight:bold;">SJEKK</button>
-                <button class="hint-btn" onclick="showHint()">HINT?</button>
-                <span id="hintDisplay" class="hint-text"></span>
-                <p id="feedback" style="margin-top:15px; font-weight:bold;"></p>
+            <div class="math-keyboard">
+                <div style="text-align: center; margin-bottom: 10px;">GJETT FUNKSJONEN:</div>
+                <div class="input-display" id="guessDisplay">f(x) = </div>
+                <div class="math-keys">
+                    <button class="m-btn" onclick="addChar('x')">x</button>
+                    <button class="m-btn" onclick="addChar('+')">+</button>
+                    <button class="m-btn" onclick="addChar('-')">-</button>
+                    <button class="m-btn" onclick="addChar('·')">·</button>
+                    <button class="m-btn" onclick="addChar('^2')">x²</button>
+                    <button class="m-btn" onclick="addChar('2')">2</button>
+                    <button class="m-btn" onclick="addChar('3')">3</button>
+                    <button class="m-btn" onclick="addChar('4')">4</button>
+                    <button class="m-btn" onclick="addChar('5')">5</button>
+                    <button class="m-btn clear" onclick="clearGuess()">Slett</button>
+                    <button class="m-btn special" onclick="checkGuess()">SJEKK SVAR</button>
+                </div>
+                <p id="feedback" style="text-align: center; font-weight: bold; margin-top: 15px;"></p>
+                <button onclick="showHint()" style="display:block; margin: 0 auto; background: none; border: none; color: #3498db; cursor: pointer;">Trenger du et hint?</button>
             </div>
-        </div>
-        
-        <div style="text-align:center; margin-top:20px;">
-            <button onclick="location.reload()" style="background:none; border:none; color:#7f8c8d; text-decoration:underline; cursor:pointer;">Bytt nivå</button>
         </div>
     </div>
 
@@ -233,7 +223,7 @@
         let currentLevel = 1;
         let currentFunc = {};
         let isProcessing = false;
-        let hintsShown = 0;
+        let userGuess = "";
 
         function startGame(lvl) {
             currentLevel = lvl;
@@ -245,50 +235,42 @@
         function generateNewFunction() {
             const n = Math.floor(Math.random() * 9) + 1;
             const a = Math.floor(Math.random() * 4) + 2;
-            hintsShown = 0;
-            document.getElementById('hintDisplay').innerText = "";
             
             if (currentLevel === 1) {
                 const op = Math.random() > 0.5 ? '+' : '-';
-                currentFunc = { 
-                    calc: (x) => op === '+' ? x + n : x - n, 
-                    ans: `x${op}${n}`,
-                    hint: `Maskinen bruker ${op === '+' ? 'addisjon' : 'subtraksjon'}.`
-                };
+                currentFunc = { calc: (x) => op === '+' ? x + n : x - n, ans: `x${op}${n}`, hint: `Maskinen bruker ${op}` };
             } else if (currentLevel === 2) {
-                const type = Math.floor(Math.random() * 3);
+                const type = Math.floor(Math.random() * 2);
                 if (type === 0) {
-                    const op = Math.random() > 0.5 ? '+' : '-';
-                    currentFunc = { calc: (x) => op === '+' ? x + n : x - n, ans: `x${op}${n}`, hint: "Det er en enkel pluss eller minus." };
-                } else if (type === 1) {
-                    currentFunc = { calc: (x) => a * x, ans: `${a}x`, hint: `Tallet ganges med noe.` };
+                    currentFunc = { calc: (x) => a * x, ans: `${a}x`, hint: "Ganging" };
                 } else {
-                    currentFunc = { calc: (x) => a * x + n, ans: `${a}x+${n}`, hint: `Først ganges x med ${a}, så skjer det noe mer...` };
+                    currentFunc = { calc: (x) => a * x + n, ans: `${a}x+${n}`, hint: "Ganging og pluss" };
                 }
             } else {
-                currentFunc = { 
-                    calc: (x) => Math.pow(x, 2) + n, 
-                    ans: `x^2+${n}`,
-                    hint: "Tallet opphøyes i andre potens (kvadreres)."
-                };
+                currentFunc = { calc: (x) => Math.pow(x, 2) + n, ans: `x^2+${n}`, hint: "Tallet opphøyes i 2." };
             }
-            currentFunc.ans = currentFunc.ans.replace("+-", "-").replace("--", "+");
+            currentFunc.ans = currentFunc.ans.replace("+-", "-").replace("·", "");
+            userGuess = "";
+            updateDisplay();
         }
 
-        function showHint() {
-            const display = document.getElementById('hintDisplay');
-            if (hintsShown === 0) {
-                display.innerText = "Hint: " + currentFunc.hint;
-            } else {
-                display.innerText = "Svaret starter med: " + currentFunc.ans.substring(0, 2) + "...";
-            }
-            hintsShown++;
+        function addChar(char) {
+            userGuess += char;
+            updateDisplay();
+        }
+
+        function clearGuess() {
+            userGuess = "";
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            document.getElementById('guessDisplay').innerText = "f(x) = " + userGuess;
         }
 
         function runFactory(val) {
             if (isProcessing) return;
             isProcessing = true;
-            
             const ball = document.getElementById('ball');
             const machine = document.getElementById('machine');
             
@@ -299,7 +281,7 @@
             machine.classList.add('working');
 
             setTimeout(() => {
-                ball.style.transition = '1s cubic-bezier(0.45, 0.05, 0.55, 0.95)';
+                ball.style.transition = '1s ease-in-out';
                 ball.style.left = '45%';
             }, 50);
 
@@ -320,28 +302,32 @@
         function addToLog(x, y) {
             const log = document.getElementById('log');
             const entry = document.createElement('div');
-            entry.style.padding = "8px";
-            entry.style.borderBottom = "1px solid #444";
-            entry.innerHTML = `Input: <strong>${x}</strong> ➔ Resultat: <strong style="color:var(--accent)">${y}</strong>`;
+            entry.style.padding = "5px";
+            entry.style.borderBottom = "1px solid #333";
+            entry.innerHTML = `Inn: ${x} ➔ Ut: <span style="color:var(--accent)">${y}</span>`;
             log.insertBefore(entry, log.firstChild.nextSibling);
         }
 
         function checkGuess() {
-            const guess = document.getElementById('guessInput').value.replace(/\s+/g, '').toLowerCase();
-            const correct = currentFunc.ans.toLowerCase();
+            // Vi renser både gjetning og svar for å sammenligne (fjerner gagnetegn for enkelhets skyld)
+            let processedGuess = userGuess.replace(/·/g, '').replace(/\^2/g, 'x2');
+            let processedAns = currentFunc.ans.replace(/\^2/g, 'x2');
             const feedback = document.getElementById('feedback');
 
-            if (guess === correct || guess === "f(x)=" + correct) {
-                feedback.innerHTML = "<span style='color:var(--success)'>⭐ RIKTIG! Genererer ny maskin...</span>";
+            if (processedGuess === processedAns) {
+                feedback.innerHTML = "🎉 HELT RIKTIG! Ny fabrikk klargjøres...";
                 setTimeout(() => {
-                    document.getElementById('log').innerHTML = '<div style="font-size:0.7rem; color:#888; margin-bottom:10px;">HISTORIKK (x ➔ y)</div>';
-                    document.getElementById('guessInput').value = '';
+                    document.getElementById('log').innerHTML = '<div style="border-bottom: 1px solid #444; padding-bottom: 5px;">HISTORIKK</div>';
                     feedback.innerText = '';
                     generateNewFunction();
                 }, 2000);
             } else {
-                feedback.innerHTML = "<span style='color:#e74c3c'>Prøv igjen! Bruk loggen til å se mønsteret.</span>";
+                feedback.innerHTML = "❌ Ikke helt riktig ennå. Prøv flere tall!";
             }
+        }
+
+        function showHint() {
+            alert("Hint: " + currentFunc.hint);
         }
     </script>
 </body>
