@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funksjonsfabrikken</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #e67e22;
+            --bg: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .factory-container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .machine {
+            background: #95a5a6;
+            padding: 20px;
+            border: 5px solid #7f8c8d;
+            border-radius: 10px;
+            margin: 20px 0;
+            position: relative;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        input, select, button {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #d35400;
+        }
+
+        .log-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        .log-table th, .log-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .log-table th {
+            background-color: #f2f2f2;
+        }
+
+        .hidden { display: none; }
+        .success { color: #27ae60; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>🏭 Funksjonsfabrikken</h1>
+    
+    <div class="factory-container">
+        <label for="levelSelect">Velg nivå:</label>
+        <select id="levelSelect" onchange="resetGame()">
+            <option value="1">Nivå 1: Barn (Enkel +/-)</option>
+            <option value="2">Nivå 2: Ungdom (Multiplikasjon)</option>
+            <option value="3">Nivå 3: VGS (Potenser/Kombinert)</option>
+        </select>
+
+        <div class="machine">
+            <div id="display">Kjør et tall gjennom maskinen!</div>
+        </div>
+
+        <div class="controls">
+            <input type="number" id="inputX" placeholder="Tall inn (x)">
+            <button onclick="processNumber()">Kjør fabrikk!</button>
+        </div>
+
+        <hr>
+
+        <h3>Hva gjør fabrikken?</h3>
+        <div class="controls">
+            <input type="text" id="guessInput" placeholder="F.eks. x + 2">
+            <button onclick="checkFormula()">Gjett funksjon</button>
+        </div>
+        <p id="feedback"></p>
+
+        <table class="log-table" id="logTable">
+            <thead>
+                <tr>
+                    <th>Input (x)</th>
+                    <th>Output (y)</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        
+        <button onclick="resetGame()" style="margin-top: 20px; background: #7f8c8d;">Nytt spill / Nullstill</button>
+    </div>
+
+    <script>
+        let currentFunction;
+        let logs = [];
+
+        function generateFunction() {
+            const level = document.getElementById('levelSelect').value;
+            const rand = Math.floor(Math.random() * 10) + 1;
+            
+            if (level == "1") {
+                const op = Math.random() > 0.5 ? '+' : '-';
+                return {
+                    apply: (x) => op === '+' ? x + rand : x - rand,
+                    answer: `x${op}${rand}`.replace('+-', '-').replace('--', '+')
+                };
+            } else if (level == "2") {
+                const factor = Math.floor(Math.random() * 5) + 2;
+                return {
+                    apply: (x) => factor * x + rand,
+                    answer: `${factor}x+${rand}`
+                };
+            } else {
+                return {
+                    apply: (x) => Math.pow(x, 2) + rand,
+                    answer: `x^2+${rand}`
+                };
+            }
+        }
+
+        function processNumber() {
+            const x = parseFloat(document.getElementById('inputX').value);
+            if (isNaN(x)) return;
+
+            const y = currentFunction.apply(x);
+            document.getElementById('display').innerText = `Inn: ${x} ➔ Ut: ${y}`;
+            
+            // Oppdater logg
+            const tbody = document.getElementById('logTable').querySelector('tbody');
+            const row = tbody.insertRow(0);
+            row.insertCell(0).innerText = x;
+            row.insertCell(1).innerText = y;
+            
+            document.getElementById('inputX').value = '';
+        }
+
+        function checkFormula() {
+            const guess = document.getElementById('guessInput').value.replace(/\s+/g, '').toLowerCase();
+            const correct = currentFunction.answer.toLowerCase();
+            const feedback = document.getElementById('feedback');
+
+            if (guess === correct) {
+                feedback.innerHTML = `<span class="success">Riktig! Funksjonen er $f(x) = ${currentFunction.answer}$</span>`;
+            } else {
+                feedback.innerText = "Ikke helt riktig. Prøv med flere tall eller sjekk formelen.";
+            }
+        }
+
+        function resetGame() {
+            currentFunction = generateFunction();
+            document.getElementById('logTable').querySelector('tbody').innerHTML = '';
+            document.getElementById('display').innerText = 'Maskinen er klar!';
+            document.getElementById('feedback').innerText = '';
+            document.getElementById('guessInput').value = '';
+            console.log("Svar (for læreren): " + currentFunction.answer); 
+        }
+
+        // Start spillet
+        resetGame();
+    </script>
+</body>
+</html>
